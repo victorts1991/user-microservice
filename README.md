@@ -88,4 +88,11 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 Nest is [MIT licensed](LICENSE).
 
 
-npm run typeorm migration:run
+TODO:
+
+- add unit tests;
+- add swagger;
+- add github actions (unit tests, sonarqube, kubernetes, docker push);
+- update README.md with steps for configuration in AWS;
+- add endpoint login with return token JWT
+- add endpoints with auth (details, changedata, delete);
