@@ -5,11 +5,11 @@ import {
 } from '@nestjs/common';
 import { CreateUserDTO } from './dto/CreateUserDTO';
 import { UserEntity } from './user.entity';
-import { UserRepository } from './user.repository';
+import { UserService } from './user.service';
 
 @Controller('/user')
 export class UserController {
-  constructor(private userRepository: UserRepository) {}
+  constructor(private userService: UserService) {}
 
   @Post()
   async createUser(@Body() userData: CreateUserDTO) {
@@ -18,7 +18,7 @@ export class UserController {
     userEntity.password = userData.password;
     userEntity.name = userData.name;
 
-    this.userRepository.save(userEntity);
+    this.userService.createUser(userEntity);
 
     return {
       user: userEntity,
