@@ -32,6 +32,21 @@
 $ npm install
 ```
 
+## Postgres
+
+Install docker and run the command:
+
+```bash
+docker run --name user-microservice-db -e POSTGRES_PASSWORD=123456 -p 5432:5432 -d postgres
+```
+
+Run migration
+
+```bash
+npm run typeorm:generate:win -n init
+npm run typeorm:run:win
+```
+
 ## Running the app
 
 ```bash
@@ -71,3 +86,6 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](LICENSE).
+
+
+npm run typeorm migration:run
