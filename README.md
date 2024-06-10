@@ -90,8 +90,11 @@ Nest is [MIT licensed](LICENSE).
 
 TODO:
 
-- add unit tests;
+- add unit tests: ok
+unit tests: npm run test:unit:cov
+e2e tests: npm run test:e2e
 - add swagger;
+- add unique email validate;
 - add github actions (unit tests, sonarqube, kubernetes, docker push);
 - update README.md with steps for configuration in AWS;
 - add endpoint login with return token JWT
