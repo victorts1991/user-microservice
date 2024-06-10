@@ -16,6 +16,8 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
+    "test:unit:cov": "jest --config ./test/jest-unit.json --coverage",
+    "test:e2e:cov": "jest --config ./test/jest-e2e.json --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
@@ -74,6 +76,14 @@
     "collectCoverageFrom": [
       "**/*.(t|j)s"
     ],
+    "coveragePathIgnorePatterns": [
+      "main.ts",
+      "app.module.ts",
+      "db/*",
+      "db/migrations/*",
+      "user/user.module.ts",
+      "config/*"
+  ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
   }

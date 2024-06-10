@@ -22,7 +22,7 @@ export class UserController {
 
     return {
       user: userEntity,
-      messagem: 'Usuário criado com sucesso.',
+      message: 'Usuário criado com sucesso.',
     };
   }
 
