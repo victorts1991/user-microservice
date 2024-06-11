@@ -96,6 +96,8 @@ e2e tests: npm run test:e2e
 - add swagger: ok
 http://localhost:3000/api
 - add unique email validate;
+- add docker compose;
+- update README.md;
 - add github actions (unit tests, sonarqube, kubernetes, docker push);
 - update README.md with steps for configuration in AWS;
 - add endpoint login with return token JWT
