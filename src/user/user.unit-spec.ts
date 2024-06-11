@@ -8,6 +8,9 @@ import { PostgresConfigService } from '../config/postgres.config.service';
 import { ConfigModule } from '@nestjs/config';
 import { plainToInstance } from 'class-transformer';
 import { validateSync } from 'class-validator';
+import { TypeORMError } from 'typeorm';
+import { HttpException } from '@nestjs/common';
+import { log } from 'console';
 
 describe('Create user', () => {
     let userController: UserController;
@@ -66,6 +69,30 @@ describe('Create user', () => {
         });
         expect(validateSync3).toHaveLength(0);
     });
+
+    it('should validate if the email is duplicate', async () => {
+        const userEntity = new UserEntity();
+        userEntity.email = "user@gmail.com";
+        userEntity.password ="123456";
+        userEntity.name = 'Fulano da Silva';
+        
+        jest.spyOn(userService, 'createUser').mockImplementation(() => {
+            throw new TypeORMError('duplicate key value violates unique constraint');
+        });
+
+        const userData: CreateUserDTO = new CreateUserDTO()
+        userData.email = userEntity.email
+        userData.password = userEntity.password
+        userData.name = userEntity.name
+
+        try {
+            await userController.createUser(userData)
+        }catch(error) {
+            //log(error.response)
+            expect(error.response.status).toEqual(400);
+            expect(error.response.message).toEqual([ 'Já existe outro usuário com este e-mail.' ]);
+        }
+    })
 
         
     it('should return an object with user created and a sucess message', async () => {

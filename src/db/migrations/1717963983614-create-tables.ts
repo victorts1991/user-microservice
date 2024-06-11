@@ -12,7 +12,9 @@ export class CreateTables1717963983614 implements MigrationInterface {
                 "created_at" TIMESTAMP NOT NULL DEFAULT now(), 
                 "updated_at" TIMESTAMP NOT NULL DEFAULT now(), 
                 "deleted_at" TIMESTAMP, 
-                CONSTRAINT "PK_d7281c63c176e152e4c531594a8" PRIMARY KEY ("id"))`,
+                CONSTRAINT "PK_d7281c63c176e152e4c531594a8" PRIMARY KEY ("id"),
+                UNIQUE (email)
+            )`,
         );
     }
 

@@ -1,4 +1,5 @@
 import { HttpStatus } from "@nestjs/common";
+import { log } from "console";
 
 import * as request from "supertest";
 
@@ -53,6 +54,28 @@ describe("AuthController (e2e)", () => {
               expect(response.body.message).toEqual('Usuário criado com sucesso.')
           })
           .expect(HttpStatus.CREATED)
+    });
+
+    it("it should validate if the email is duplicate", () => {
+      var agent = request(baseUrl);
+      agent.post("/user")
+        .set("Accept", "application/json")
+        .send({
+            name: 'Fulano da Silva',
+            email: 'user@gmail.com',
+            password: '123456'
+        }).end(() => {
+          agent.post("/user")
+            .set("Accept", "application/json")
+            .send({
+                name: 'Fulano da Silva',
+                email: 'user@gmail.com',
+                password: '123456'
+            }).end((err, res) => {
+              //log(res.text)
+              expect(JSON.parse(res.text).message.filter((value) => value === "Já existe outro usuário com este e-mail.").length).toEqual(1)
+            });
+        });
     });
 
   });
