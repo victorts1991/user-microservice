@@ -1,6 +1,8 @@
 import {
   Body,
   Controller,
+  HttpException,
+  HttpStatus,
   Post,
 } from '@nestjs/common';
 import { CreateUserDTO } from './dto/CreateUserDTO';
@@ -33,12 +35,24 @@ export class UserController {
     userEntity.password = userData.password;
     userEntity.name = userData.name;
 
-    this.userService.createUser(userEntity);
+    try{
+      await this.userService.createUser(userEntity)
+    }catch (error) {
+      let message = error.message
+      if(message.indexOf('duplicate key value violates unique constraint') > -1) {
+        message = 'Já existe outro usuário com este e-mail.'
+      }
+      throw new HttpException({
+        status: HttpStatus.BAD_REQUEST,
+        message: [message],
+      }, HttpStatus.BAD_REQUEST);
+    }
 
     return {
       user: userEntity,
-      message: 'Usuário criado com sucesso.',
-    };
+      message: 'Usuário criado com sucesso.'
+    }
+    
   }
 
 }
