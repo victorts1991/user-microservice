@@ -93,7 +93,8 @@ TODO:
 - add unit tests: ok
 unit tests: npm run test:unit:cov
 e2e tests: npm run test:e2e
-- add swagger;
+- add swagger: ok
+http://localhost:3000/api
 - add unique email validate;
 - add github actions (unit tests, sonarqube, kubernetes, docker push);
 - update README.md with steps for configuration in AWS;

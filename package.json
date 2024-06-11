@@ -29,6 +29,7 @@
     "@nestjs/config": "^3.2.2",
     "@nestjs/core": "^9.0.0",
     "@nestjs/platform-express": "^9.0.0",
+    "@nestjs/swagger": "^7.3.1",
     "@nestjs/typeorm": "^10.0.2",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.13.2",
@@ -83,7 +84,7 @@
       "db/migrations/*",
       "user/user.module.ts",
       "config/*"
-  ],
+    ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
   }
