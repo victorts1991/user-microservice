@@ -51,6 +51,8 @@ None of the above steps are necessary, just the command below:
 $ docker compose up --build
 ```
 
+Note: If you are running on Windows and get any errors, run your CLI as administrator.
+
 ## Swagger
 
 After running the application, access the following url: http://localhost:3000/api
