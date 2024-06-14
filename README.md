@@ -37,7 +37,7 @@ $ npm install
 Install docker and run the command:
 
 ```bash
-docker run --name user-microservice-db -e POSTGRES_PASSWORD=123456 -p 5432:5432 -d postgres
+docker run --name user-microservice-db -e POSTGRES_PASSWORD=123456 -e POSTGRES_DB=user-microservice-db -p 5432:5432 -d postgres
 ```
 
 Run migration
