@@ -63,7 +63,8 @@ After running the application, access the following url: http://localhost:3000/a
 
 ## TODO:
 
-- add github actions (unit tests, sonarqube, kubernetes(AWS - EKS), docker push(AWS - ECR), e2e tests);
+- add github actions (unit tests, sonarqube, kubernetes(GCP - GKE), docker push(GCP - 
+ARTIFACT REGISTRY), e2e tests);
 - update README.md with steps for configuration in AWS;
 - add endpoint login with return token JWT;
 - add endpoints with auth (details, changedata, delete);

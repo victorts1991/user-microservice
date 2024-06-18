@@ -1,0 +1,19 @@
+name: User Microservice CI
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+
+  unit-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+      - name: Unit Tests      
+        run: npm install && npm run test:unit:cov
+      - uses: actions/upload-artifact@v4
+        with:
+          name: lcov.info
+          path: coverage/lcov.info
