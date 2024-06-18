@@ -57,8 +57,12 @@ Note: If you are running on Windows and get any errors, run your CLI as administ
 
 After running the application, access the following url: http://localhost:3000/api
 
+## Steps to deploy in the Cloud
+
+...
+
 ## TODO:
-- add kubernetes yamls;
+
 - add github actions (unit tests, sonarqube, kubernetes(AWS - EKS), docker push(AWS - ECR), e2e tests);
 - update README.md with steps for configuration in AWS;
 - add endpoint login with return token JWT;

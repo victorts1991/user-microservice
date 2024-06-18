@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-microservice-deployment
+spec:
+  template:
+    metadata:
+      name: user-microservice
+      labels: 
+        app: user-microservice
+    spec:
+      containers:
+        - name: user-microservice-container
+          image: $ECR_REPOSITORY
+          resources:
+            limits:
+              cpu: "0.1"
+              memory: "512Mi"          
+            requests:
+              cpu: "0.1"
+              memory: "512Mi"
+          ports:
+            - containerPort: 3000
+          envFrom:
+            - secretRef:
+                name: secrets-user-microservice
+          livenessProbe:
+            httpGet:
+              path: /liveness
+              port: 3000
+            periodSeconds: 10
+            failureThreshold: 3
+            initialDelaySeconds: 20
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user-microservice        

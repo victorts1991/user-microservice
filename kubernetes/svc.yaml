@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-microservice-svc
+  annotations:
+    alb.ingress.kubernetes.io/security-groups: eks_default
+spec:
+  type: LoadBalancer
+  selector:
+    app: user-microservice
+  ports:
+    - port: 3000
+      targetPort: 3000
