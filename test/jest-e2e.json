@@ -19,7 +19,8 @@
       "db/migrations/*",
       "user/user.module.ts",
       "config/*",
-      "user/*.unit-spec.ts"
+      "user/*.unit-spec.ts",
+      "health/*"
   ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"

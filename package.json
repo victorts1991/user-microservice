@@ -83,7 +83,8 @@
       "db/*",
       "db/migrations/*",
       "user/user.module.ts",
-      "config/*"
+      "config/*",
+      "health/*"
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
