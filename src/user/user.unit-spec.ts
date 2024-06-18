@@ -3,7 +3,7 @@ import { UserController } from './user.controller';
 import { UserService } from './user.service';
 import { CreateUserDTO } from './dto/CreateUserDTO';
 import { UserEntity } from './user.entity';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { TypeOrmModule, getRepositoryToken } from '@nestjs/typeorm';
 import { PostgresConfigService } from '../config/postgres.config.service';
 import { ConfigModule } from '@nestjs/config';
 import { plainToInstance } from 'class-transformer';
@@ -16,20 +16,24 @@ describe('Create user', () => {
     let userController: UserController;
     let userService: UserService;
 
+    const mockUserEntityRepository= {
+        save: jest.fn(),
+        find: jest.fn(),
+        findOne: jest.fn(),
+        delete: jest.fn(),
+    };
+
     beforeEach(async () => {
         const moduleRef = await Test.createTestingModule({
-            imports: [
-                ConfigModule.forRoot({
-                    isGlobal: true,
-                }),
-                TypeOrmModule.forFeature([UserEntity]),
-                TypeOrmModule.forRootAsync({
-                    useClass: PostgresConfigService,
-                    inject: [PostgresConfigService],
-                }),
-            ],
+            imports: [],
             controllers: [UserController],
-            providers: [UserService],
+            providers: [
+                UserService,
+                {
+                    provide: getRepositoryToken(UserEntity),
+                    useValue: mockUserEntityRepository,
+                },
+            ],
         }).compile();
 
         userService = moduleRef.get<UserService>(UserService);

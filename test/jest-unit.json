@@ -19,7 +19,8 @@
         "db/migrations/*",
         "user/user.module.ts",
         "config/*",
-        "user/*.e2e-spec.ts"
+        "user/*.e2e-spec.ts",
+        "health/*"
     ],
       "coverageDirectory": "../coverage",
       "testEnvironment": "node"
