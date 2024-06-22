@@ -28,7 +28,7 @@ jobs:
       - name: Download coverage reports
         uses: actions/download-artifact@v4
         with:
-          name: coverage.out
+          name: coverage/lcov.info
       - name: Analyze with SonarCloud
         uses: sonarsource/sonarcloud-github-action@master
         with:
