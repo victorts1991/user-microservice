@@ -36,7 +36,7 @@ jobs:
           args: >
             -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }}
             -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
-            -Dsonar.javascript.lcov.reportPaths=../lcov.info        
+            -Dsonar.javascript.lcov.reportPaths=./lcov.info        
             -Dsonar.exclusions=**/*-spec.ts
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
