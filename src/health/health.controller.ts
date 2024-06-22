@@ -14,7 +14,7 @@ import {
       description: "Liveness api.",
     })
     async liveness() {
-      return { status: HttpStatus.OK, data: { status: true } }\
+      return { status: HttpStatus.OK, data: { status: true } }
     }
   }
   
