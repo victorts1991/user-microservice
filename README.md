@@ -78,7 +78,8 @@ SONAR_TOKEN=Valor copiado no passo 5
 
 ## TODO:
 
-- add github actions (unit tests, sonarqube, kubernetes(GCP - GKE), docker push(GCP - 
+- Definir a nuvem;
+- add github actions (kubernetes(GCP - GKE), docker push(GCP - 
 ARTIFACT REGISTRY), e2e tests);
 - update README.md with steps for configuration in AWS;
 - add endpoint login with return token JWT;
