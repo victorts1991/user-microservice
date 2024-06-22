@@ -69,9 +69,9 @@ https://sonarcloud.io/
 5. Depois novamente no menu Account, acesse My Account->Security e crie um novo token e copie o seu valor;
 6. Retorne até o menu Settings do seu projeto do Github e cadastre novas "repository secret" conforme explicado abaixo:
 ```
-SONAR_PROJECT_KEY=Valor copiado no passo 4
-SONAR_ORGANIZATION=Valor copiado no passo 5
-SONAR_TOKEN=Valor copiado no passo 6
+SONAR_PROJECT_KEY=Valor copiado no passo 3
+SONAR_ORGANIZATION=Valor copiado no passo 4
+SONAR_TOKEN=Valor copiado no passo 5
 ```
 
 ...
