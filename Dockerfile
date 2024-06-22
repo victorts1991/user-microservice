@@ -1,7 +1,5 @@
 FROM node:18
 
-ENTRYPOINT ["id"]
-
 WORKDIR /app
 
 RUN npm install --ignore-scripts
