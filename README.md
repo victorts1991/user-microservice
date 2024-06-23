@@ -99,7 +99,7 @@ SONAR_TOKEN=Valor copiado no passo 5
 1. Retornando a plataforma da AWS, vá até o menu ECR;
 2.  Crie um repositório privado chamado user-microservice-container;
 
-## 4. Create database in RDS:
+## 4. Create a database in RDS:
 
 1. Ainda na plataforma da AWS, vá até o menu RDS;
 2. Clique na opção "Banco de Dados" do menu lateral e em seguida no botão "Criar banco de dados";
@@ -123,17 +123,20 @@ echo -n '12345678' | base64
 11. Com os valores de saída, volte até a plataforma do Github, acesse o menu "Settings" do projeto, na tela que se abrir, clique no menu Security->Secrets and variables->Actions;
 12. Adicione uma "repository secret" chamada DB_HOST com o valor da saída do endpoint, e crie outra "repository secret" chamada DB_PASS com o valor da saída da senha;
 
+## 5. Create a Cluster Kubernetes in EKS:
 
-
-
-
+1. Continuando na plataforma da AWS, vá até o menu EKS;
+2. Clique no botão "Adicionar cluster" e depois na opção "Criar";
+3. Digite o nome "user-microservice-cluster" ou algum outro que preferir;
+4. Clique em "Criar um perfil no console do IAM" e crie o perfil com as opções padrões mesmo;
+5. Voltando a tela de criação de cluster, no campo "Função de serviço do cluster", selecione o perfil que acabou de criar;
+6. Após isso vá avançando no formulário com as configurações padrões mesmo e no final clique em "Criar";
 
 ...
 
 ## TODO:
 
-- add github actions (kubernetes(GCP - GKE), docker push(GCP - 
-ARTIFACT REGISTRY), e2e tests);
-- update README.md with steps for configuration in AWS;
+- add github actions (kubernetes(GCP - GKE), docker push(AWS - 
+ECR), e2e tests);
 - add endpoint login with return token JWT;
 - add endpoints with auth (details, changedata, delete);
