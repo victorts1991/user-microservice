@@ -2,13 +2,9 @@ FROM node:18
 
 WORKDIR /app
 
-RUN npm install --ignore-scripts
+RUN npm install
 
-COPY ./node_modules /node_modules
-COPY ./src /src
-COPY ./nest-cli.json /nest-cli.json
-COPY ./package.json /package.json
-COPY ./tsconfig.json /tsconfig.json
+COPY . .
 
 RUN npm run build
 
