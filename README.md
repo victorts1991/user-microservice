@@ -57,7 +57,7 @@ Note: If you are running on Windows and get any errors, run your CLI as administ
 
 After running the application, access the following url: http://localhost:3000/api
 
-## Steps to deploy in the Cloud with Github Actions
+## Steps to deploy in the AWS with Github Actions
 
 ## 1. SonarQube:
 
@@ -94,7 +94,7 @@ SONAR_TOKEN=Valor copiado no passo 5
 15. Voltando até a plataforma do Github, acesse o menu "Settings" do projeto, na tela que se abrir, clique no menu Security->Secrets and variables->Actions;
 16. Adicione uma "repository secret" chamada AWS_ACCESS_KEY_ID com o valor copiado de "Chave de acesso", crie outra "repository secret" chamada AWS_SECRET_ACCESS_KEY com o valor copiado de "Chave de acesso secreta", e crie uma última chamada AWS_REGION com a região na qual está criando toda a sua infraestrutura, por exemplo: "us-east-2";
 
-## 3. Create private repository in ECR:
+## 3. Create a private repository in ECR:
 
 1. Retornando a plataforma da AWS, vá até o menu ECR;
 2. Crie um repositório privado chamado user-microservice-container;
@@ -141,6 +141,15 @@ eksctl create cluster --name  user-microservice-cluster --region us-east-2 --nod
 //configuração do kubernetes
 aws eks update-kubeconfig --name user-microservice-cluster --region=us-east-2
 ```
+
+## 6. Consume the microservices
+
+1. Qualquer commit feito na branch main irá iniciar o pipeline que irá subir a api para a AWS;
+2. Após o pipeline ser concluído, vá até o terminal em seu computador e digite o seguinte comando:
+```
+kubectl get svc
+```
+3. Copie o valor de EXTERNAL-IP do serviço user-microservice-svc, será algo semelhante a "ae94c4e3875c64fc1b2fabcf6db21b0c-1072296997.us-east-2.elb.amazonaws.com";
 
 ...
 
