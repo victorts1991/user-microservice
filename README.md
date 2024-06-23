@@ -82,7 +82,7 @@ SONAR_TOKEN=Valor copiado no passo 5
 2. Acesse IAM->Usuários e crie um novo usuário chamado Github;
 3. Com esse usuário criado, vá até a listagem de usuários e acesse os detalhes do mesmo;
 4. No menu Permissões que irá aparecer na tela de detalhes, clique no botão "Adicionar permissões" que aparece no canto direito e selecione a opção "Criar política em linha";
-5. No combo de serviços do formulário que será aberto, selecione a opção EC2, marque a opção "Todas as ações do EC2 (ec2:\*)" que irá aparecer, e em Recursos marque a opção "Tudo", logo abaixo irá aparecer um botão "Adicionar mais permissões", clique nele e repita o mesmo processo que fez com o EC2 para os seguintes serviços: EKS, IAM e CloudWatch Logs;
+5. No combo de serviços do formulário que será aberto, selecione a opção EC2, marque a opção "Todas as ações do EC2 (ec2:\*)" que irá aparecer, e em Recursos marque a opção "Tudo", logo abaixo irá aparecer um botão "Adicionar mais permissões", clique nele e repita o mesmo processo que fez com o EC2 para os seguintes serviços: EKS, IAM, CloudFormation e CloudWatch Logs;
 6. Após avançar, defina um nome e clique em "Criar política";
 7. Após isso, ainda no menu de Permissões, clique em "Adicionar permissões" mais um vez, porém dessa vez, selecione a opção "Adicionar permissões" ao invés de "Criar política em linha";
 8. Na tela que irá aparecer, selecione a opção "Anexar políticas diretamente";
@@ -125,13 +125,22 @@ echo -n '12345678' | base64
 
 ## 5. Create a Cluster Kubernetes in EKS:
 
-1. Continuando na plataforma da AWS, vá até o menu EKS;
-2. Clique no botão "Adicionar cluster" e depois na opção "Criar";
-3. Digite o nome "user-microservice-cluster" ou algum outro que preferir;
-4. Clique em "Criar um perfil no console do IAM" e crie o perfil com as opções padrões mesmo;
-5. Voltando a tela de criação de cluster, no campo "Função de serviço do cluster", selecione o perfil que acabou de criar;
-6. Após isso vá avançando no formulário com as configurações padrões mesmo e no final clique em "Criar";
-7. Aguarde um tempo para que a AWS termine de criar o cluster e após isso, acesse os detalhes do mesmo, clique na aba "Computação", vá até o bloco "Grupos de nós" e clique no botão "Adicionar grupo de nós";
+1. Em seu computador instale o CLI da AWS e eksctl através dos links abaixo:
+```
+https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
+https://eksctl.io/installation/
+```
+2. Execute os seguintes comandos em seu terminal:
+```
+//este comando irá pedir a Chave de acesso e a Chave de acesso secreta, além da região na qual você está criando a sua infraestrutura
+aws configure
+
+//criação do cluster Kubernetes, este pode levar um tempo para ser concluído
+eksctl create cluster --name  user-microservice-cluster --region us-east-2 --node-type m5.2xlarge --nodes 2
+
+//configuração do kubernetes
+aws eks update-kubeconfig --name user-microservice-cluster --region=us-east-2
+```
 
 ...
 
