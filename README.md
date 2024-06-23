@@ -125,17 +125,58 @@ echo -n '"12345678"' | base64
 
 ## 5. Create a Cluster Kubernetes in EKS:
 
-1. Na AWS vá até o menu IAM e clique no menu lateral "Grupo de usuários";
-2. Crie um grupo de usuários com as permissões descritas no link abaixo:
+1. Na AWS vá até o menu IAM e clique no menu lateral "Funções";
+2. Clique no botão "Criar perfil";
+3. Em "Tipo de entidade confiável" selecione o item "Política de confiança personalizada" copie o código abaixo e cole em "Política de confiança personalizada":
 ```
-https://eksctl.io/usage/minimum-iam-policies/
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "EKSNodeAssumeRole",
+            "Effect": "Allow",
+            "Principal": {
+                "Service": "ec2.amazonaws.com"
+            },
+            "Action": "sts:AssumeRole"
+        }
+    ]
+}
 ```
-3. Adicione o usuário no qual você criou as chaves de acesso anteriormente a este grupo;
-4. Em seu computador instale o CLI da AWS e eksctl através dos links abaixo:
+4. Depois clique no botão "Próximo", e na tela que se abriu, pesquise e adicione as seguintes permissões: AmazonEC2ContainerRegistryReadOnly, AmazonEKS_CNI_Policy e AmazonEKSWorkerNodePolicy, após isso clique no botão "Próximo";
+5. Em "Nome da função" digite o nome "role-create-node" ou algum outro que preferir, após isso clique no botão "Criar perfil";
+6. Crie uma nova função com o mesmo "Tipo de entidade confiável" selecionando o item "Política de confiança personalizada", copie o código abaixo e cole em "Política de confiança personalizada":
 ```
-https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
-https://eksctl.io/installation/
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "EKSClusterAssumeRole",
+            "Effect": "Allow",
+            "Principal": {
+                "Service": "eks.amazonaws.com"
+            },
+            "Action": "sts:AssumeRole"
+        }
+    ]
+}
 ```
+7. Depois clique no botão "Próximo", e na tela que se abriu, pesquise e adicione as seguintes permissões: AmazonEKSClusterPolicy e AmazonEKSVPCResourceController, após isso clique no botão "Próximo";
+8. Em "Nome da função" digite o nome "role-create-cluster" ou algum outro que preferir, após isso clique no botão "Criar perfil";
+9. Após isso vá no menu EKS e clique em "Criar cluster";
+10. Em "Nome" digite "user-microservice-cluster", e em "Função de serviço do cluster" selecione a função "role-create-cluster" criada no passo 8, após isso vá avançando no formulário até chegar na última página e clicar no botão "Criar";
+11. A criação do cluster poderá demorar alguns minutos, após a conclusão da criação acesse os detalhes do mesmo;
+12. Clique na aba "Computação" e no bloco "Grupos de nós" clique no botão "Adicionar grupo de nós";
+13. Defina o nome que preferir e em "Função do IAM do nó" selecione a função "role-create-node" criada no passo 5, após isso clique em "Próximo";
+14. Na próxima tela vá até o último bloco chamado "Configuração de atualização do grupo de nós", digite o valor 2 no campo "Value" e clique em "Próximo";
+15. Avance nas demais telas até chegar na última e clicar no botão "Criar";
+16. A criação do grupo de nós poderá demorar alguns minutos, você poderá acompanhar acessando os detalhes do cluster, na aba "Computação" e no bloco "Grupo de nós";
+17. Após a criação do grupo de nós, qualquer commit na branch main irá iniciar o pipeline que levará a aplicação para a AWS;
+
+
+....................
+
+
 5. Execute os seguintes comandos em seu terminal:
 ```
 //este comando irá pedir a Chave de acesso e a Chave de acesso secreta, além da região na qual você está criando a sua infraestrutura
