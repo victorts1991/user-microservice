@@ -148,17 +148,18 @@ echo -n '"12345678"' | base64
 6. Crie uma nova função com o mesmo "Tipo de entidade confiável" selecionando o item "Política de confiança personalizada", copie o código abaixo e cole em "Política de confiança personalizada":
 ```
 {
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Sid": "EKSClusterAssumeRole",
-            "Effect": "Allow",
-            "Principal": {
-                "Service": "eks.amazonaws.com"
-            },
-            "Action": "sts:AssumeRole"
-        }
-    ]
+	"Version": "2012-10-17",
+	"Statement": [
+		{
+			"Sid": "EKSClusterAssumeRole",
+			"Effect": "Allow",
+			"Principal": {
+			    "AWS": "arn:aws:iam::058264412534:root",
+				"Service": "eks.amazonaws.com"
+			},
+			"Action": "sts:AssumeRole"
+		}
+	]
 }
 ```
 7. Depois clique no botão "Próximo", e na tela que se abriu, pesquise e adicione as seguintes permissões: AmazonEKSClusterPolicy e AmazonEKSVPCResourceController, após isso clique no botão "Próximo";
@@ -171,7 +172,50 @@ echo -n '"12345678"' | base64
 14. Na próxima tela vá até o último bloco chamado "Configuração de atualização do grupo de nós", digite o valor 2 no campo "Value" e clique em "Próximo";
 15. Avance nas demais telas até chegar na última e clicar no botão "Criar";
 16. A criação do grupo de nós poderá demorar alguns minutos, você poderá acompanhar acessando os detalhes do cluster, na aba "Computação" e no bloco "Grupo de nós";
-17. Após a criação do grupo de nós, qualquer commit na branch main irá iniciar o pipeline que levará a aplicação para a AWS;
+17. Após a criação do grupo de nós;
+
+
+
+///////////////////////RASCUNHO INICIO
+    .......
+19.
+20.
+21.
+22.
+23.
+24. vá até sua máquina e instale as seguintes bibliotecas para ser possível utilizar a CLI da AWS e eksctl:
+```
+https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
+https://eksctl.io/installation/
+```
+18. Após a instalação das bibliotecas descritas acima, digite os comandos abaixo em seu terminal:
+```
+//este comando irá pedir a Chave de acesso e a Chave de acesso secreta, além da região na qual você está criando a sua infraestrutura
+aws configure
+
+aws sts get-caller-identity
+//a saída deverá ser algo semelhante a isso:
+//{
+//    "UserId": "AIDAQ3EGUMF3KUWZ2Q5OI",
+//    "Account": "058264412534",
+//    "Arn": "arn:aws:iam::058264412534:user/Github_Actions"
+//}
+
+//Copie o valor da propriedade UserId
+```
+19. Com a propriedade UserId copiada, retorne até o painel da AWS, vá no menu IAM e clique no menu lateral "Funcões";
+20. Clique em "Criar perfil" e selecione o item "Conta da AWS" no bloco "Tipo de entidade confiável";
+21. No bloco "Uma conta da AWS" selecione a opção "Outra conta da AWS" e cole o UserId no campo "ID da conta", após isso clique em "Próximo";
+22. 
+
+
+ 
+23.
+24.
+25.
+26.
+27.
+28. qualquer commit na branch main irá iniciar o pipeline que levará a aplicação para a AWS;
 
 
 ....................
@@ -196,6 +240,8 @@ Obs: Caso ao executar o comando [eksctl create cluster...] você obtenha um erro
 eksctl create nodegroup --cluster=user-microservice-cluster [--name=user_microservice_cluster_node_one]
 ```
 
+///////////////////////RASCUNHO FIM
+
 
 ## 6. Consume the microservices
 
@@ -209,8 +255,7 @@ kubectl get svc
 ...
 
 ## TODO:
-
-- add github actions (kubernetes(GCP - GKE), docker push(AWS - 
-ECR), e2e tests);
+- Resolver o problema do usuário cli da aws não conseguir acessar o cluster kubernetes criado manualmente;
+- add github actions (e2e tests);
 - add endpoint login with return token JWT;
 - add endpoints with auth (details, changedata, delete);
