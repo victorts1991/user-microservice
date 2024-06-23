@@ -42,51 +42,51 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
-    setup-kubernetes:
-      needs: code-analisys  
-      name: Code Analisys with SonarCloud
-      runs-on: ubuntu-latest
-      steps:
-      - name: Check out code
-        uses: actions/checkout@v3
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
-          mask-aws-account-id: 'no'
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
-      - name: Install kubectl
-        uses: azure/setup-kubectl@v3
-        id: install-kubectl
-      - name: Update KubeConfig
-        shell: bash
-        run: |
-          aws eks update-kubeconfig --name user-microservice-cluster --region=${{ secrets.AWS_REGION }}
-      - name: Deploy API Default
-        id: deploy-api-default
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        run: |        
-          export ECR_REPOSITORY=${{ env.ECR_REGISTRY }}/user-microservice-container:latest        
-          export DB_HOST=${{ secrets.DB_HOST }}
-          export DB_PASS=${{ secrets.DB_PASS }}
-          cd ./kubernetes/metrics-server
-          kubectl apply -f components.yaml
-          cd ../
-          envsubst < secrets.yaml | kubectl apply -f -
-          envsubst < deployment.yaml | kubectl apply -f -
-          kubectl apply -f hpa.yaml
-          kubectl apply -f svc.yaml
-      - name: Build, tag, and push image to Amazon ECR    
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: user-microservice-container
-          IMAGE_TAG: latest
-        run: |
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          kubectl rollout restart deployment user-microservice
+  setup-kubernetes:
+    needs: code-analisys  
+    name: Setup Kubernetes and Docker Push
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v3
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ secrets.AWS_REGION }}
+        mask-aws-account-id: 'no'
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+    - name: Install kubectl
+      uses: azure/setup-kubectl@v3
+      id: install-kubectl
+    - name: Update KubeConfig
+      shell: bash
+      run: |
+        aws eks update-kubeconfig --name user-microservice-cluster --region=${{ secrets.AWS_REGION }}
+    - name: Deploy API Default
+      id: deploy-api-default
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+      run: |        
+        export ECR_REPOSITORY=${{ env.ECR_REGISTRY }}/user-microservice-container:latest        
+        export DB_HOST=${{ secrets.DB_HOST }}
+        export DB_PASS=${{ secrets.DB_PASS }}
+        cd ./kubernetes/metrics-server
+        kubectl apply -f components.yaml
+        cd ../
+        envsubst < secrets.yaml | kubectl apply -f -
+        envsubst < deployment.yaml | kubectl apply -f -
+        kubectl apply -f hpa.yaml
+        kubectl apply -f svc.yaml
+    - name: Build, tag, and push image to Amazon ECR    
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        ECR_REPOSITORY: user-microservice-container
+        IMAGE_TAG: latest
+      run: |
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        kubectl rollout restart deployment user-microservice
