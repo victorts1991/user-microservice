@@ -125,22 +125,36 @@ echo -n '"12345678"' | base64
 
 ## 5. Create a Cluster Kubernetes in EKS:
 
-1. Em seu computador instale o CLI da AWS e eksctl através dos links abaixo:
+1. Na AWS vá até o menu IAM e clique no menu lateral "Grupo de usuários";
+2. Crie um grupo de usuários com as permissões descritas no link abaixo:
+```
+https://eksctl.io/usage/minimum-iam-policies/
+```
+3. Adicione o usuário no qual você criou as chaves de acesso anteriormente a este grupo;
+4. Em seu computador instale o CLI da AWS e eksctl através dos links abaixo:
 ```
 https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
 https://eksctl.io/installation/
 ```
-2. Execute os seguintes comandos em seu terminal:
+5. Execute os seguintes comandos em seu terminal:
 ```
 //este comando irá pedir a Chave de acesso e a Chave de acesso secreta, além da região na qual você está criando a sua infraestrutura
 aws configure
 
 //criação do cluster Kubernetes, este pode levar um tempo para ser concluído
-eksctl create cluster --name  user-microservice-cluster --region us-east-2 --node-type m5.2xlarge --nodes 2
+eksctl create cluster --name=user-microservice-cluster --region=us-east-2 --node-type=m5.2xlarge --nodes=2 --profile=default
 
 //configuração do kubernetes
 aws eks update-kubeconfig --name user-microservice-cluster --region=us-east-2
 ```
+
+
+
+Obs: Caso ao executar o comando [eksctl create cluster...] você obtenha um erro e mesmo assim no painel da AWS o cluster estiver sendo criado, ainda será preciso verificar se após a criação do cluster o mesmo possuí 2 nós, caso não possua, crie esses nós com o comando abaixo:
+```
+eksctl create nodegroup --cluster=user-microservice-cluster [--name=user_microservice_cluster_node_one]
+```
+
 
 ## 6. Consume the microservices
 
