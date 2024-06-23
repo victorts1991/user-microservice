@@ -117,8 +117,8 @@ echo -n 'user-microservice-db.cbqgeakk0utc.us-east-2.rds.amazonaws.com' | base64
 //OUTPUT: dXNlci1taWNyb3NlcnZpY2UtZGIuY2JxZ2Vha2swdXRjLnVzLWVhc3QtMi5yZHMuYW1hem9uYXdzLmNvbQ==
 
 //Senha
-echo -n '12345678' | base64
-//OUTPUT: MTIzNDU2Nzg=
+echo -n '"12345678"' | base64
+//OUTPUT: IjEyMzQ1Njc4Ig==
 ```
 11. Com os valores de saída, volte até a plataforma do Github, acesse o menu "Settings" do projeto, na tela que se abrir, clique no menu Security->Secrets and variables->Actions;
 12. Adicione uma "repository secret" chamada DB_HOST com o valor da saída do endpoint, e crie outra "repository secret" chamada DB_PASS com o valor da saída da senha;
