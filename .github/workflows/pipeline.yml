@@ -75,7 +75,7 @@ jobs:
         export DB_HOST=${{ secrets.DB_HOST }}
         export DB_PASS=${{ secrets.DB_PASS }}
         cd ./kubernetes/metrics-server
-        kubectl apply -f components.yaml
+        kubectl apply -f components.yaml --validate=false
         cd ../
         envsubst < secrets.yaml | kubectl apply -f -
         envsubst < deployment.yaml | kubectl apply -f -
