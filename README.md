@@ -131,6 +131,7 @@ echo -n '12345678' | base64
 4. Clique em "Criar um perfil no console do IAM" e crie o perfil com as opções padrões mesmo;
 5. Voltando a tela de criação de cluster, no campo "Função de serviço do cluster", selecione o perfil que acabou de criar;
 6. Após isso vá avançando no formulário com as configurações padrões mesmo e no final clique em "Criar";
+7. Aguarde um tempo para que a AWS termine de criar o cluster e após isso, acesse os detalhes do mesmo, clique na aba "Computação", vá até o bloco "Grupos de nós" e clique no botão "Adicionar grupo de nós";
 
 ...
 
