@@ -166,7 +166,7 @@ echo -n '"12345678"' | base64
 8. Em "Nome da função" digite o nome "role-create-cluster" ou algum outro que preferir, após isso clique no botão "Criar perfil";
 9. Após isso vá no menu EKS e clique em "Criar cluster";
 10. Em "Nome" digite "user-microservice-cluster", e em "Função de serviço do cluster" selecione a função "role-create-cluster" criada no passo 8;
-11. No bloco "Acesso ao cluster" deixe a opção "API do EKS e ConfigMap" marcada, após isso vá avançando no formulário até chegar na última página e clicar no botão "Criar";
+11. No bloco "Acesso ao cluster" deixe a opção "API do EKS e ConfigMap" e a "Permitir acesso de administrador do cluster" marcadas, após isso vá avançando no formulário até chegar na última página e clicar no botão "Criar";
 12. A criação do cluster poderá demorar alguns minutos, após a conclusão da criação acesse os detalhes do mesmo;
 13. Clique na aba "Computação" e no bloco "Grupos de nós" clique no botão "Adicionar grupo de nós";
 14. Defina o nome que preferir e em "Função do IAM do nó" selecione a função "role-create-node" criada no passo 5, após isso clique em "Próximo";
@@ -177,11 +177,13 @@ echo -n '"12345678"' | base64
 19. No formulário que se abriu, selecione o usuário "Github" criado nos passos do step 2 no campo "ARN da entidade principal do IAM" e clique no botão "Próximo";
 20. Em "Nome da política" selecione a opção "AmazonEKSClusterAdminPolicy" e clique no botão "Adicionar política", a seguir clique em "Próximo";
 21. Na próxima tela clique no botão "Criar";
+22. Após isso adicione mais um usuário com a política "AmazonEKSClusterAdminPolicy", porém ao invés de selecionar o mesmo no combo, apenas digite "arn:aws:iam::<ID da conta>:root" e clique na tecla "Enter", este usuário é necessário para que seja possível visualizar os Recursos do Kubernetes via interface posteriormente;
+23. Com todos esses passos finalizados, qualquer commit feito na branch "main" irá acionar o pipeline e subir a infraestrutura na AWS;
 
 
 
 
-
+.......
 
 ///////////////////////RASCUNHO INICIO
     .......
