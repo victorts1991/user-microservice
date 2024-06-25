@@ -10,4 +10,7 @@ COPY . .
 
 RUN npm run build
 
+USER app
+EXPOSE 3000
+
 CMD [ "npm", "run", "start" ]
