@@ -264,7 +264,7 @@ kubectl get svc
 ...
 
 ## TODO:
-- Resolver o problema do usuário cli da aws não conseguir acessar o cluster kubernetes criado manualmente;
+- Testar a subida;
 - add github actions (e2e tests);
 - add endpoint login with return token JWT;
 - add endpoints with auth (details, changedata, delete);
