@@ -154,7 +154,7 @@ echo -n '"12345678"' | base64
 			"Sid": "EKSClusterAssumeRole",
 			"Effect": "Allow",
 			"Principal": {
-			    "AWS": "arn:aws:iam::058264412534:root",
+				"AWS": "arn:aws:iam::058264412534:root",
 				"Service": "eks.amazonaws.com"
 			},
 			"Action": "sts:AssumeRole"
@@ -165,14 +165,21 @@ echo -n '"12345678"' | base64
 7. Depois clique no botão "Próximo", e na tela que se abriu, pesquise e adicione as seguintes permissões: AmazonEKSClusterPolicy e AmazonEKSVPCResourceController, após isso clique no botão "Próximo";
 8. Em "Nome da função" digite o nome "role-create-cluster" ou algum outro que preferir, após isso clique no botão "Criar perfil";
 9. Após isso vá no menu EKS e clique em "Criar cluster";
-10. Em "Nome" digite "user-microservice-cluster", e em "Função de serviço do cluster" selecione a função "role-create-cluster" criada no passo 8, após isso vá avançando no formulário até chegar na última página e clicar no botão "Criar";
-11. A criação do cluster poderá demorar alguns minutos, após a conclusão da criação acesse os detalhes do mesmo;
-12. Clique na aba "Computação" e no bloco "Grupos de nós" clique no botão "Adicionar grupo de nós";
-13. Defina o nome que preferir e em "Função do IAM do nó" selecione a função "role-create-node" criada no passo 5, após isso clique em "Próximo";
-14. Na próxima tela vá até o último bloco chamado "Configuração de atualização do grupo de nós", digite o valor 2 no campo "Value" e clique em "Próximo";
-15. Avance nas demais telas até chegar na última e clicar no botão "Criar";
-16. A criação do grupo de nós poderá demorar alguns minutos, você poderá acompanhar acessando os detalhes do cluster, na aba "Computação" e no bloco "Grupo de nós";
-17. Após a criação do grupo de nós;
+10. Em "Nome" digite "user-microservice-cluster", e em "Função de serviço do cluster" selecione a função "role-create-cluster" criada no passo 8;
+11. No bloco "Acesso ao cluster" deixe a opção "API do EKS e ConfigMap" marcada, após isso vá avançando no formulário até chegar na última página e clicar no botão "Criar";
+12. A criação do cluster poderá demorar alguns minutos, após a conclusão da criação acesse os detalhes do mesmo;
+13. Clique na aba "Computação" e no bloco "Grupos de nós" clique no botão "Adicionar grupo de nós";
+14. Defina o nome que preferir e em "Função do IAM do nó" selecione a função "role-create-node" criada no passo 5, após isso clique em "Próximo";
+15. Na próxima tela vá até o último bloco chamado "Configuração de atualização do grupo de nós", digite o valor 2 no campo "Value" e clique em "Próximo";
+16. Avance nas demais telas até chegar na última e clicar no botão "Criar";
+17. A criação do grupo de nós poderá demorar alguns minutos, você poderá acompanhar acessando os detalhes do cluster, na aba "Computação" e no bloco "Grupo de nós";
+18. Após a criação do grupo de nós, ainda nos detalhes do cluster vá até a aba "Acesso" e no bloco "Entradas de acesso do IAM" clique no botão "Criar entrada de acesso";
+19. No formulário que se abriu, selecione o usuário "Github" criado nos passos do step 2 no campo "ARN da entidade principal do IAM" e clique no botão "Próximo";
+20. Em "Nome da política" selecione a opção "AmazonEKSClusterAdminPolicy" e clique no botão "Adicionar política", a seguir clique em "Próximo";
+21. Na próxima tela clique no botão "Criar";
+
+
+
 
 
 
