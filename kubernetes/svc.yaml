@@ -9,5 +9,5 @@ spec:
   selector:
     app: user-microservice
   ports:
-    - port: 80
-      targetPort: 3000
+    - port: 3000
+      targetPort: 80
