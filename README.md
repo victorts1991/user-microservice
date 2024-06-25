@@ -107,18 +107,19 @@ SONAR_TOKEN=Valor copiado no passo 5
 4. Em modelos selecione o Nível Gratuito caso esteja apenas testando;
 5. Em Configurações, digite o nome "user-microservice-db" no campo "Identificador da instância de banco de dados";
 6. Em Senha principal digite uma senha segura e deixe a mesma anotada em um bloco de notas por enquanto;
-7. Depois disse clique no botão "Criar banco de dados";
-8. Após a criação do banco de dados ser concluída, na listagem dos banco de dados clique no banco de dados que você acabou de criar;
-9. Na tela de detalhes que se abriu, na sessão "Segurança e conexão" copie o valor do Endpoint, será algo semelhante ao valor "user-microservice-db.cbqgeakk0utc.us-east-2.rds.amazonaws.com";
-10. Em seu computador, acesse o seu terminal e digite os comandos abaixo com o endpoint e senha do seu banco de dados:
+7. Para facilitar o exemplo deixe o campo "Acesso público" marcado como "Sim";
+8. Depois disse clique no botão "Criar banco de dados";
+9. Após a criação do banco de dados ser concluída, na listagem dos banco de dados clique no banco de dados que você acabou de criar;
+10. Na tela de detalhes que se abriu, na sessão "Segurança e conexão" copie o valor do Endpoint, será algo semelhante ao valor "user-microservice-db.cbqgeakk0utc.us-east-2.rds.amazonaws.com";
+11. Em seu computador, acesse o seu terminal e digite os comandos abaixo com o endpoint e senha do seu banco de dados:
 ```
 //Endpoint
 echo -n 'user-microservice-db.cbqgeakk0utc.us-east-2.rds.amazonaws.com' | base64
 //OUTPUT: dXNlci1taWNyb3NlcnZpY2UtZGIuY2JxZ2Vha2swdXRjLnVzLWVhc3QtMi5yZHMuYW1hem9uYXdzLmNvbQ==
 
 //Senha
-echo -n '"12345678"' | base64
-//OUTPUT: IjEyMzQ1Njc4Ig==
+echo -n '123mudar' | base64
+//OUTPUT: MTIzbXVkYXI=
 ```
 11. Com os valores de saída, volte até a plataforma do Github, acesse o menu "Settings" do projeto, na tela que se abrir, clique no menu Security->Secrets and variables->Actions;
 12. Adicione uma "repository secret" chamada DB_HOST com o valor da saída do endpoint, e crie outra "repository secret" chamada DB_PASS com o valor da saída da senha;
@@ -154,7 +155,7 @@ echo -n '"12345678"' | base64
 			"Sid": "EKSClusterAssumeRole",
 			"Effect": "Allow",
 			"Principal": {
-				"AWS": "arn:aws:iam::058264412534:root",
+				"AWS": "arn:aws:iam::<ID da conta>:root",
 				"Service": "eks.amazonaws.com"
 			},
 			"Action": "sts:AssumeRole"
