@@ -171,15 +171,14 @@ echo -n '123mudar' | base64
 12. A criação do cluster poderá demorar alguns minutos, após a conclusão da criação acesse os detalhes do mesmo;
 13. Clique na aba "Computação" e no bloco "Grupos de nós" clique no botão "Adicionar grupo de nós";
 14. Defina o nome que preferir e em "Função do IAM do nó" selecione a função "role-create-node" criada no passo 5, após isso clique em "Próximo";
-15. Na próxima tela vá até o último bloco chamado "Configuração de atualização do grupo de nós", digite o valor 2 no campo "Value" e clique em "Próximo";
-16. Avance nas demais telas até chegar na última e clicar no botão "Criar";
-17. A criação do grupo de nós poderá demorar alguns minutos, você poderá acompanhar acessando os detalhes do cluster, na aba "Computação" e no bloco "Grupo de nós";
-18. Após a criação do grupo de nós, ainda nos detalhes do cluster vá até a aba "Acesso" e no bloco "Entradas de acesso do IAM" clique no botão "Criar entrada de acesso";
-19. No formulário que se abriu, selecione o usuário "Github" criado nos passos do step 2 no campo "ARN da entidade principal do IAM" e clique no botão "Próximo";
-20. Em "Nome da política" selecione a opção "AmazonEKSClusterAdminPolicy" e clique no botão "Adicionar política", a seguir clique em "Próximo";
-21. Na próxima tela clique no botão "Criar";
-22. Após isso adicione mais um usuário com a política "AmazonEKSClusterAdminPolicy", porém ao invés de selecionar o mesmo no combo, apenas digite "arn:aws:iam::<ID da conta>:root" e clique na tecla "Enter", este usuário é necessário para que seja possível visualizar os Recursos do Kubernetes via interface posteriormente;
-23. Com todos esses passos finalizados, qualquer commit feito na branch "main" irá acionar o pipeline e subir a infraestrutura na AWS;
+15. Avance nas demais telas até chegar na última e clicar no botão "Criar";
+16. A criação do grupo de nós poderá demorar alguns minutos, você poderá acompanhar acessando os detalhes do cluster, na aba "Computação" e no bloco "Grupo de nós";
+17. Após a criação do grupo de nós, ainda nos detalhes do cluster vá até a aba "Acesso" e no bloco "Entradas de acesso do IAM" clique no botão "Criar entrada de acesso";
+18. No formulário que se abriu, selecione o usuário "Github" criado nos passos do step 2 no campo "ARN da entidade principal do IAM" e clique no botão "Próximo";
+19. Em "Nome da política" selecione a opção "AmazonEKSClusterAdminPolicy" e clique no botão "Adicionar política", a seguir clique em "Próximo";
+20. Na próxima tela clique no botão "Criar";
+21. Após isso adicione mais um usuário com a política "AmazonEKSClusterAdminPolicy", porém ao invés de selecionar o mesmo no combo, apenas digite "arn:aws:iam::<ID da conta>:root" e clique na tecla "Enter", este usuário é necessário para que seja possível visualizar os Recursos do Kubernetes via interface posteriormente;
+22. Com todos esses passos finalizados, qualquer commit feito na branch "main" irá acionar o pipeline e subir a infraestrutura na AWS;
 
 
 
