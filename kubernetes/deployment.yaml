@@ -25,8 +25,6 @@ spec:
             - secretRef:
                 name: secrets-user-microservice
           livenessProbe:
-            grpc:
-              port: 80
             httpGet:
               path: /liveness
               port: 80
