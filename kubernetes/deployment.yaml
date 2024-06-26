@@ -31,7 +31,7 @@ spec:
             timeoutSeconds: 5
             periodSeconds: 10
             failureThreshold: 3
-            initialDelaySeconds: 30
+            initialDelaySeconds: 60
   replicas: 1
   selector:
     matchLabels:
