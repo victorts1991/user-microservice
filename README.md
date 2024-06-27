@@ -187,6 +187,8 @@ echo -n '123mudar' | base64
 
 
 
+
+
 .......
 
 ///////////////////////RASCUNHO INICIO
