@@ -1,15 +1,15 @@
-FROM node:18
+FROM node:20
 
 WORKDIR /app
 
-RUN npm install --ignore-scripts
+COPY package*.json ./
 
-COPY ./node_modules /node_modules
-COPY ./src /src
-COPY ./nest-cli.json /nest-cli.json
-COPY ./package.json /package.json
-COPY ./tsconfig.json /tsconfig.json
+RUN npm install
+
+COPY . .
 
 RUN npm run build
 
-CMD [ "npm", "run", "start" ]
+EXPOSE 3000
+
+CMD [ "node", "./dist/main.js" ]

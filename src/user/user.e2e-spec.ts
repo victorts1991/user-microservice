@@ -4,7 +4,8 @@ import { log } from "console";
 import * as request from "supertest";
 
 describe("AuthController (e2e)", () => {
-  const baseUrl = `http://localhost:3000`
+  const argUSER_MICROSERVICE_URL = process.argv.filter((x) => x.startsWith('-USER_MICROSERVICE_URL='))[0]
+  const baseUrl = argUSER_MICROSERVICE_URL ? argUSER_MICROSERVICE_URL.split('=')[1] : `http://localhost:3000`
 
   describe("/user (POST)", () => {
     
@@ -71,9 +72,8 @@ describe("AuthController (e2e)", () => {
                 name: 'Fulano da Silva',
                 email: 'user@gmail.com',
                 password: '123456'
-            }).end((err, res) => {
-              //log(res.text)
-              expect(JSON.parse(res.text).message.filter((value) => value === "Já existe outro usuário com este e-mail.").length).toEqual(1)
+            }).end((response: request.Response) => {
+              expect(response.body.message.filter((value) => value === "Já existe outro usuário com este e-mail.").length).toEqual(1)
             });
         });
     });
