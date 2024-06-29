@@ -102,20 +102,26 @@ SONAR_TOKEN=Valor copiado no passo 5
 ## 4. Create a database in RDS:
 
 1. Ainda na plataforma da AWS, vá até o menu RDS;
-2. Clique na opção "Banco de Dados" do menu lateral e em seguida no botão "Criar banco de dados";
-3. Selecione o banco de dados PostgreSQL;
-4. Em modelos selecione a opção "Produção";
-5. Em "Disponibilidade e durabilidade" selecione a opção "Instância de banco de dados única";
-6. Em Configurações, digite o nome "usermicroservicedb" no campo "Identificador da instância de banco de dados";
-7. Em "Gerenciamento de credenciais" selecione "Autogerenciada" e defina uma senha, deixe a mesma anotada em um bloco de notas por enquanto;
-8. Em "Conectividade" no campo "Nuvem privada virtual (VPC)", selecione a opção "Criar nova VPC";
-9. Deixe o campo "Acesso público" marcado como "Sim";
-10. Em "Grupo de segurança de VPC (firewall)" selecione a opção "Criar novo" e em "Novo nome do grupo de segurança da VPC" digite "usermicroservicedb-sg";
-11. No bloco "Configuração adicional" clique para expandir e coloque o "Nome do banco de dados inicial" como "usermicroservicedb" também;
-12. Depois disso clique no botão "Criar banco de dados";
-13. Após a criação do banco de dados ser concluída, na listagem dos banco de dados clique no banco de dados que você acabou de criar;
-14. Na tela de detalhes que se abriu, na sessão "Segurança e conexão" copie o valor do Endpoint, será algo semelhante ao valor "usermicroservicedb.cbqgeakk0utc.us-east-2.rds.amazonaws.com";
-15. Em seu computador, acesse o seu terminal e digite os comandos abaixo com o endpoint e senha do seu banco de dados:
+2. Clique em "Painel" e depois na opção "Grupos de parâmetros";
+3. Clique no botão "Criar grupo de parâmetros";
+4. Atribua um nome e descrição, no combo "Tipo de mecanismo" selecione "PostgreSQL", em "Família de grupos de parâmetros" selecione a última versão do PostgreSQL disponível e clique em "Criar";
+5. Após isso acesse os detalhes do Grupo de parâmetros criado e clique em "Editar";
+6. Filtre o parâmetro "rds.force_ssl" e altere o valor de 1 para 0;
+7. Após isso clique no botão "Salvar alterações", vá no menu lateral "Banco de dados" e em seguida no botão "Criar banco de dados";
+9. Selecione o banco de dados PostgreSQL;
+10. Em modelos selecione a opção "Produção";
+11. Em "Disponibilidade e durabilidade" selecione a opção "Instância de banco de dados única";
+12. Em Configurações, digite o nome "usermicroservicedb" no campo "Identificador da instância de banco de dados";
+13. Em "Gerenciamento de credenciais" selecione "Autogerenciada" e defina uma senha, deixe a mesma anotada em um bloco de notas por enquanto;
+14. Em "Conectividade" no campo "Nuvem privada virtual (VPC)", selecione a opção "Criar nova VPC";
+15. Deixe o campo "Acesso público" marcado como "Sim";
+16. Em "Grupo de segurança de VPC (firewall)" selecione a opção "Criar novo" e em "Novo nome do grupo de segurança da VPC" digite "usermicroservicedb-sg";
+17. No bloco "Configuração adicional" clique para expandir e coloque o "Nome do banco de dados inicial" como "usermicroservicedb" também;
+18. Ainda em "Configuração adicional" selecione o "Grupo de parâmetros do banco de dados" criado no passo 7;
+19. Depois disso clique no botão "Criar banco de dados";
+20. Após a criação do banco de dados ser concluída, na listagem dos banco de dados clique no banco de dados que você acabou de criar;
+21. Na tela de detalhes que se abriu, na sessão "Segurança e conexão" copie o valor do Endpoint, será algo semelhante ao valor "usermicroservicedb.cbqgeakk0utc.us-east-2.rds.amazonaws.com";
+22. Em seu computador, acesse o seu terminal e digite os comandos abaixo com o endpoint e senha do seu banco de dados:
 ```
 //Endpoint
 echo -n 'usermicroservicedb.cbqgeakk0utc.us-east-2.rds.amazonaws.com' | base64
