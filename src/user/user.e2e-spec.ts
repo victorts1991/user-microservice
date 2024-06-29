@@ -4,7 +4,7 @@ import { log } from "console";
 import * as request from "supertest";
 
 describe("AuthController (e2e)", () => {
-  const baseUrl = `http://localhost:3000`
+  const baseUrl = process.env.USER_MICROSERVICE_URL ? process.env.USER_MICROSERVICE_URL : `http://localhost:3000`
 
   describe("/user (POST)", () => {
     
