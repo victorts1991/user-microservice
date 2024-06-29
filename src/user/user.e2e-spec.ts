@@ -71,9 +71,9 @@ describe("AuthController (e2e)", () => {
                 name: 'Fulano da Silva',
                 email: 'user@gmail.com',
                 password: '123456'
-            }).end((err, res) => {
-              //log(res.text)
-              expect(JSON.parse(res.text).message.filter((value) => value === "Já existe outro usuário com este e-mail.").length).toEqual(1)
+            }).end((response: request.Response) => {
+              log(response)
+              expect(JSON.parse(response.text).message.filter((value) => value === "Já existe outro usuário com este e-mail.").length).toEqual(1)
             });
         });
     });
