@@ -177,18 +177,20 @@ echo -n '123mudar' | base64
 8. Em "Nome da função" digite o nome "role-create-cluster" ou algum outro que preferir, após isso clique no botão "Criar perfil";
 9. Após isso vá no menu EKS e clique em "Criar cluster";
 10. Em "Nome" digite "user-microservice-cluster", e em "Função de serviço do cluster" selecione a função "role-create-cluster" criada no passo 8;
-11. No bloco "Acesso ao cluster" deixe a opção "API do EKS e ConfigMap" e a "Permitir acesso de administrador do cluster" marcadas, após isso vá avançando no formulário até chegar na última página e clicar no botão "Criar";
-12. A criação do cluster poderá demorar alguns minutos, após a conclusão da criação acesse os detalhes do mesmo;
-13. Clique na aba "Computação" e no bloco "Grupos de nós" clique no botão "Adicionar grupo de nós";
-14. Defina o nome que preferir e em "Função do IAM do nó" selecione a função "role-create-node" criada no passo 5, após isso clique em "Próximo";
-15. Avance nas demais telas até chegar na última e clicar no botão "Criar";
-16. A criação do grupo de nós poderá demorar alguns minutos, você poderá acompanhar acessando os detalhes do cluster, na aba "Computação" e no bloco "Grupo de nós";
-17. Após a criação do grupo de nós, ainda nos detalhes do cluster vá até a aba "Acesso" e no bloco "Entradas de acesso do IAM" clique no botão "Criar entrada de acesso";
-18. No formulário que se abriu, selecione o usuário "Github" criado nos passos do step 2 no campo "ARN da entidade principal do IAM" e clique no botão "Próximo";
-19. Em "Nome da política" selecione a opção "AmazonEKSClusterAdminPolicy" e clique no botão "Adicionar política", a seguir clique em "Próximo";
-20. Na próxima tela clique no botão "Criar";
-21. Após isso, caso o usuário root não esteja na lista de "Entradas de acesso do IAM", adicione ele com a política "AmazonEKSClusterAdminPolicy" da mesma forma que fez com o usuário anterior, porém ao invés de selecionar o mesmo no combo, apenas digite "arn:aws:iam::<ID da conta>:root" e clique na tecla "Enter", este usuário é necessário para que seja possível visualizar os Recursos do Kubernetes via interface posteriormente;
-22. Com todos esses passos finalizados, qualquer commit feito na branch "main" irá acionar o pipeline e subir a infraestrutura na AWS;
+11. No bloco "Acesso ao cluster" deixe a opção "API do EKS e ConfigMap" e a "Permitir acesso de administrador do cluster" marcadas;
+12. Após isso clique em avançar e em VPC e grupo de segurança, selecione os mesmos utilizados para o banco de dados RDS;
+13. Vá avançando no formulário até chegar na última página e clicar no botão "Criar";
+14. A criação do cluster poderá demorar alguns minutos, após a conclusão da criação acesse os detalhes do mesmo;
+15. Clique na aba "Computação" e no bloco "Grupos de nós" clique no botão "Adicionar grupo de nós";
+16. Defina o nome que preferir e em "Função do IAM do nó" selecione a função "role-create-node" criada no passo 5, após isso clique em "Próximo";
+17. Avance nas demais telas até chegar na última e clicar no botão "Criar";
+18. A criação do grupo de nós poderá demorar alguns minutos, você poderá acompanhar acessando os detalhes do cluster, na aba "Computação" e no bloco "Grupo de nós";
+19. Após a criação do grupo de nós, ainda nos detalhes do cluster vá até a aba "Acesso" e no bloco "Entradas de acesso do IAM" clique no botão "Criar entrada de acesso";
+20. No formulário que se abriu, selecione o usuário "Github" criado nos passos do step 2 no campo "ARN da entidade principal do IAM" e clique no botão "Próximo";
+21. Em "Nome da política" selecione a opção "AmazonEKSClusterAdminPolicy" e clique no botão "Adicionar política", a seguir clique em "Próximo";
+22. Na próxima tela clique no botão "Criar";
+23. Após isso, caso o usuário root não esteja na lista de "Entradas de acesso do IAM", adicione ele com a política "AmazonEKSClusterAdminPolicy" da mesma forma que fez com o usuário anterior, porém ao invés de selecionar o mesmo no combo, apenas digite "arn:aws:iam::<ID da conta>:root" e clique na tecla "Enter", este usuário é necessário para que seja possível visualizar os Recursos do Kubernetes via interface posteriormente;
+24. Com todos esses passos finalizados, qualquer commit feito na branch "main" irá acionar o pipeline e subir a infraestrutura na AWS;
 
 
 
