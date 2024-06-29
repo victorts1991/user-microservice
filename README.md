@@ -181,7 +181,7 @@ echo -n '123mudar' | base64
 18. No formulário que se abriu, selecione o usuário "Github" criado nos passos do step 2 no campo "ARN da entidade principal do IAM" e clique no botão "Próximo";
 19. Em "Nome da política" selecione a opção "AmazonEKSClusterAdminPolicy" e clique no botão "Adicionar política", a seguir clique em "Próximo";
 20. Na próxima tela clique no botão "Criar";
-21. Após isso adicione mais um usuário com a política "AmazonEKSClusterAdminPolicy", porém ao invés de selecionar o mesmo no combo, apenas digite "arn:aws:iam::<ID da conta>:root" e clique na tecla "Enter", este usuário é necessário para que seja possível visualizar os Recursos do Kubernetes via interface posteriormente;
+21. Após isso, caso o usuário root não esteja na lista de "Entradas de acesso do IAM", adicione ele com a política "AmazonEKSClusterAdminPolicy" da mesma forma que fez com o usuário anterior, porém ao invés de selecionar o mesmo no combo, apenas digite "arn:aws:iam::<ID da conta>:root" e clique na tecla "Enter", este usuário é necessário para que seja possível visualizar os Recursos do Kubernetes via interface posteriormente;
 22. Com todos esses passos finalizados, qualquer commit feito na branch "main" irá acionar o pipeline e subir a infraestrutura na AWS;
 
 
