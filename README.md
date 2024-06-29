@@ -120,8 +120,12 @@ SONAR_TOKEN=Valor copiado no passo 5
 18. Ainda em "Configuração adicional" selecione o "Grupo de parâmetros do banco de dados" criado no passo 7;
 19. Depois disso clique no botão "Criar banco de dados";
 20. Após a criação do banco de dados ser concluída, na listagem dos banco de dados clique no banco de dados que você acabou de criar;
-21. Na tela de detalhes que se abriu, na sessão "Segurança e conexão" copie o valor do Endpoint, será algo semelhante ao valor "usermicroservicedb.cbqgeakk0utc.us-east-2.rds.amazonaws.com";
-22. Em seu computador, acesse o seu terminal e digite os comandos abaixo com o endpoint e senha do seu banco de dados:
+21. Clique no "Grupos de segurança da VPC", na tela que se abriu clique no check do item que aparece da listagem;
+22. No conteúdo carregado abaixo clique na aba "Regras de entrada" e em seguida no botão "Editar regras de entrada";
+23. Na tela que se abriu clique no botão "Adicionar regra", na linha que apareceu selecione "Todo o tráfego" em "Tipo" e em "Blocos CIDR" selecione a opção "0.0.0.0/0";
+24. Clique no botão "Salvar regras" e volte aos detalhes do banco de dados que você criou;
+25. Na tela de detalhes que se abriu, na sessão "Segurança e conexão" copie o valor do Endpoint, será algo semelhante ao valor "usermicroservicedb.cbqgeakk0utc.us-east-2.rds.amazonaws.com";
+26. Em seu computador, acesse o seu terminal e digite os comandos abaixo com o endpoint e senha do seu banco de dados:
 ```
 //Endpoint
 echo -n 'usermicroservicedb.cbqgeakk0utc.us-east-2.rds.amazonaws.com' | base64
@@ -178,7 +182,7 @@ echo -n '123mudar' | base64
 9. Após isso vá no menu EKS e clique em "Criar cluster";
 10. Em "Nome" digite "user-microservice-cluster", e em "Função de serviço do cluster" selecione a função "role-create-cluster" criada no passo 8;
 11. No bloco "Acesso ao cluster" deixe a opção "API do EKS e ConfigMap" e a "Permitir acesso de administrador do cluster" marcadas;
-12. Após isso clique em avançar e em VPC e grupo de segurança, selecione os mesmos utilizados para o banco de dados RDS;
+*******12. Após isso clique em avançar e em VPC e grupo de segurança, selecione os mesmos utilizados para o banco de dados RDS;
 13. Vá avançando no formulário até chegar na última página e clicar no botão "Criar";
 14. A criação do cluster poderá demorar alguns minutos, após a conclusão da criação acesse os detalhes do mesmo;
 15. Clique na aba "Computação" e no bloco "Grupos de nós" clique no botão "Adicionar grupo de nós";
