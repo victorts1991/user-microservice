@@ -95,12 +95,12 @@ jobs:
 
   wait-3-minutes:
     needs: setup-kubernetes
-    runs-on: self-hosted
-    name: wait-job
+    runs-on: ubuntu-latest
     steps:
-      - name: Sleep for 3 minutes
-        run: sleep 180s
-        shell: bash
+    - name: Sleep for 3 minutes
+      uses: jakejarvis/wait-action@master
+      with:
+        time: '180s'
 
   e2e-test:
     needs: wait-3-minutes
