@@ -195,93 +195,21 @@ echo -n '123mudar' | base64
 22. Após isso, caso o usuário root não esteja na lista de "Entradas de acesso do IAM", adicione ele com a política "AmazonEKSClusterAdminPolicy" da mesma forma que fez com o usuário anterior, porém ao invés de selecionar o mesmo no combo, apenas digite "arn:aws:iam::<ID da conta>:root" e clique na tecla "Enter", este usuário é necessário para que seja possível visualizar os Recursos do Kubernetes via interface posteriormente;
 23. Com todos esses passos finalizados, qualquer commit feito na branch "main" irá acionar o pipeline e subir a infraestrutura na AWS;
 
+## 6. For local kubernetes connection
 
-
-
-
-
-.......
-
-///////////////////////RASCUNHO INICIO
-    .......
-19.
-20.
-21.
-22.
-23.
-24. vá até sua máquina e instale as seguintes bibliotecas para ser possível utilizar a CLI da AWS e eksctl:
-```
-https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
-https://eksctl.io/installation/
-```
-18. Após a instalação das bibliotecas descritas acima, digite os comandos abaixo em seu terminal:
+- Execute os comandos abaixo em seu terminal:
 ```
 //este comando irá pedir a Chave de acesso e a Chave de acesso secreta, além da região na qual você está criando a sua infraestrutura
 aws configure
-
-aws sts get-caller-identity
-//a saída deverá ser algo semelhante a isso:
-//{
-//    "UserId": "AIDAQ3EGUMF3KUWZ2Q5OI",
-//    "Account": "058264412534",
-//    "Arn": "arn:aws:iam::058264412534:user/Github_Actions"
-//}
-
-//Copie o valor da propriedade UserId
-```
-19. Com a propriedade UserId copiada, retorne até o painel da AWS, vá no menu IAM e clique no menu lateral "Funcões";
-20. Clique em "Criar perfil" e selecione o item "Conta da AWS" no bloco "Tipo de entidade confiável";
-21. No bloco "Uma conta da AWS" selecione a opção "Outra conta da AWS" e cole o UserId no campo "ID da conta", após isso clique em "Próximo";
-22. 
-
-
- 
-23.
-24.
-25.
-26.
-27.
-28. qualquer commit na branch main irá iniciar o pipeline que levará a aplicação para a AWS;
-
-
-....................
-
-
-5. Execute os seguintes comandos em seu terminal:
-```
-//este comando irá pedir a Chave de acesso e a Chave de acesso secreta, além da região na qual você está criando a sua infraestrutura
-aws configure
-
-//criação do cluster Kubernetes, este pode levar um tempo para ser concluído
-eksctl create cluster --name=user-microservice-cluster --region=us-east-2 --node-type=m5.2xlarge --nodes=2 --profile=default
 
 //configuração do kubernetes
 aws eks update-kubeconfig --name user-microservice-cluster --region=us-east-2
+
+kubectl get pods
 ```
 
-
-
-Obs: Caso ao executar o comando [eksctl create cluster...] você obtenha um erro e mesmo assim no painel da AWS o cluster estiver sendo criado, ainda será preciso verificar se após a criação do cluster o mesmo possuí 2 nós, caso não possua, crie esses nós com o comando abaixo:
-```
-eksctl create nodegroup --cluster=user-microservice-cluster [--name=user_microservice_cluster_node_one]
-```
-
-///////////////////////RASCUNHO FIM
-
-
-## 6. Consume the microservices
-
-1. Qualquer commit feito na branch main irá iniciar o pipeline que irá subir a api para a AWS;
-2. Após o pipeline ser concluído, vá até o terminal em seu computador e digite o seguinte comando:
-```
-kubectl get svc
-```
-3. Copie o valor de EXTERNAL-IP do serviço user-microservice-svc, será algo semelhante a "ae94c4e3875c64fc1b2fabcf6db21b0c-1072296997.us-east-2.elb.amazonaws.com";
-
-...
 
 ## TODO:
-- Testar a subida;
 - add github actions (e2e tests);
 - add endpoint login with return token JWT;
 - add endpoints with auth (details, changedata, delete);
