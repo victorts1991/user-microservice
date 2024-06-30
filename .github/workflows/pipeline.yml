@@ -67,7 +67,6 @@ jobs:
       run: |
         aws eks update-kubeconfig --name user-microservice-cluster --region=${{ secrets.AWS_REGION }}
     - name: Deploy API
-      id: deploy-api-user
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
       run: |        
@@ -82,6 +81,7 @@ jobs:
         kubectl apply -f hpa.yaml
         kubectl apply -f svc.yaml
     - name: Build, tag, and push image to Amazon ECR    
+      id: deploy-api-user
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         ECR_REPOSITORY: user-microservice-container
