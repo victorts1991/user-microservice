@@ -209,7 +209,6 @@ aws eks update-kubeconfig --name user-microservice-cluster --region=us-east-2
 kubectl get pods
 ```
 
-
 ## TODO:
 - add endpoint login with return token JWT;
 - add endpoints with auth (details, changedata, delete);
