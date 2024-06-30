@@ -46,8 +46,6 @@ jobs:
     needs: code-analisys  
     name: Setup Kubernetes and Docker Push
     runs-on: ubuntu-latest
-    outputs:
-      USER_MICROSERVICE_URL: ${{ steps.encrypt-output.outputs.USER_MICROSERVICE_URL }}
     steps:
     - name: Check out code
       uses: actions/checkout@v3
@@ -91,30 +89,7 @@ jobs:
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         kubectl rollout restart deployment user-microservice-deployment
-    - name: Encrypt output
-      id: encrypt-output
-      run: |
-        export USER_MICROSERVICE_URL="http://$(kubectl get svc user-microservice-svc -n default -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')"        
-        export USER_MICROSERVICE_URL=$(echo -n $USER_MICROSERVICE_URL | base64 -w 0)
-        echo -n "USER_MICROSERVICE_URL=$USER_MICROSERVICE_URL" >> $GITHUB_OUTPUT
-        echo $USER_MICROSERVICE_URL
-
-  testando-var:
-    needs: setup-kubernetes
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out code
-        uses: actions/checkout@v3
-      - name: E2E Tests    
-        env:
-          USER_MICROSERVICE_URL: ${{ needs.setup-kubernetes.outputs.USER_MICROSERVICE_URL }}  
-        run: |
-          echo ${{ needs.setup-kubernetes.outputs.USER_MICROSERVICE_URL }}
-          echo $USER_MICROSERVICE_URL
-          export USER_MICROSERVICE_URL=$(echo $USER_MICROSERVICE_URL | base64 --decode | rev | cut -c1- | rev)
-          echo $USER_MICROSERVICE_URL
-
-
+  
   wait-3-minutes:
     needs: setup-kubernetes
     runs-on: ubuntu-latest
@@ -128,14 +103,25 @@ jobs:
     needs: wait-3-minutes
     runs-on: ubuntu-latest
     steps:
-      - name: Check out code
-        uses: actions/checkout@v3
-      - name: E2E Tests    
-        env:
-          USER_MICROSERVICE_URL: ${{ needs.setup-kubernetes.outputs.USER_MICROSERVICE_URL }}  
-        run: |
-          export USER_MICROSERVICE_URL=$(echo $USER_MICROSERVICE_URL | base64 --decode | rev | cut -c1- | rev)
-          echo $USER_MICROSERVICE_URL
-          npm install
-          npm run test:e2e
+    - name: Check out code
+      uses: actions/checkout@v3
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ secrets.AWS_REGION }}
+        mask-aws-account-id: 'false'
+    - name: Install kubectl
+      uses: azure/setup-kubectl@v3
+      id: install-kubectl
+    - name: Update KubeConfig
+      shell: bash
+      run: |
+        aws eks update-kubeconfig --name user-microservice-cluster --region=${{ secrets.AWS_REGION }}
+    - name: E2E Tests     
+      run: |
+        export USER_MICROSERVICE_URL="http://$(kubectl get svc user-microservice-svc -n default -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')"
+        npm install
+        npm run test:e2e
       
