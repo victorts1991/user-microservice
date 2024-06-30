@@ -47,7 +47,7 @@ jobs:
     name: Setup Kubernetes and Docker Push
     runs-on: ubuntu-latest
     outputs:
-      USER_MICROSERVICE_URL: ${{ steps.deploy-api-user.outputs.USER_MICROSERVICE_URL }}
+      USER_MICROSERVICE_URL: ${{ steps.encrypt-output.outputs.USER_MICROSERVICE_URL }}
     steps:
     - name: Check out code
       uses: actions/checkout@v3
@@ -82,8 +82,7 @@ jobs:
         envsubst < deployment.yaml | kubectl apply -f -
         kubectl apply -f hpa.yaml
         kubectl apply -f svc.yaml
-    - name: Build, tag, and push image to Amazon ECR    
-      id: deploy-api-user
+    - name: Build, tag, and push image to Amazon ECR
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         ECR_REPOSITORY: user-microservice-container
@@ -92,9 +91,12 @@ jobs:
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         kubectl rollout restart deployment user-microservice-deployment
+    - name: Encrypt output
+      id: encrypt-output
+      run: |
         export USER_MICROSERVICE_URL="USER_MICROSERVICE_URL=http://$(kubectl get svc user-microservice-svc -n default -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')"        
         echo $USER_MICROSERVICE_URL
-        echo $USER_MICROSERVICE_URL >> $GITHUB_OUTPUT
+        echo -n $USER_MICROSERVICE_URL | base64 >> $GITHUB_OUTPUT
    
 
   testando-var:
@@ -108,10 +110,8 @@ jobs:
           USER_MICROSERVICE_URL: ${{ needs.setup-kubernetes.outputs.USER_MICROSERVICE_URL }}  
         run: |
           echo $USER_MICROSERVICE_URL
-          export USER_MICROSERVICE_URL=$(echo -n $USER_MICROSERVICE_URL | base64 -w 0)
+          export USER_MICROSERVICE_URL=$(echo $USER_MICROSERVICE_URL | base64 --decode | rev | cut -c1- | rev)
           echo $USER_MICROSERVICE_URL
-          
-      
 
 
   wait-3-minutes:
@@ -133,7 +133,7 @@ jobs:
         env:
           USER_MICROSERVICE_URL: ${{ needs.setup-kubernetes.outputs.USER_MICROSERVICE_URL }}  
         run: |
-          export USER_MICROSERVICE_URL=$(echo -n $USER_MICROSERVICE_URL | base64 -w 0)
+          export USER_MICROSERVICE_URL=$(echo $USER_MICROSERVICE_URL | base64 --decode | rev | cut -c1- | rev)
           echo $USER_MICROSERVICE_URL
           npm install
           npm run test:e2e
