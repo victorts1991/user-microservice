@@ -120,12 +120,13 @@ SONAR_TOKEN=Valor copiado no passo 5
 18. Ainda em "Configuração adicional" selecione o "Grupo de parâmetros do banco de dados" criado no passo 7;
 19. Depois disso clique no botão "Criar banco de dados";
 20. Após a criação do banco de dados ser concluída, na listagem dos banco de dados clique no banco de dados que você acabou de criar;
-21. Clique no "Grupos de segurança da VPC", na tela que se abriu clique no check do item que aparece da listagem;
-22. No conteúdo carregado abaixo clique na aba "Regras de entrada" e em seguida no botão "Editar regras de entrada";
-23. Na tela que se abriu clique no botão "Adicionar regra", na linha que apareceu selecione "Todo o tráfego" em "Tipo" e em "Blocos CIDR" selecione a opção "0.0.0.0/0";
-24. Clique no botão "Salvar regras" e volte aos detalhes do banco de dados que você criou;
-25. Na tela de detalhes que se abriu, na sessão "Segurança e conexão" copie o valor do Endpoint, será algo semelhante ao valor "usermicroservicedb.cbqgeakk0utc.us-east-2.rds.amazonaws.com";
-26. Em seu computador, acesse o seu terminal e digite os comandos abaixo com o endpoint e senha do seu banco de dados:
+21. Clique no "Grupos de segurança da VPC";
+22. Na tela que se abriu clique no check do item que aparece da listagem;
+23. No conteúdo carregado abaixo clique na aba "Regras de entrada" e em seguida no botão "Editar regras de entrada";
+24. Na tela que se abriu clique no botão "Adicionar regra", na linha que apareceu selecione "Todo o tráfego" em "Tipo" e em "Blocos CIDR" selecione a opção "0.0.0.0/0";
+25. Clique no botão "Salvar regras" e volte aos detalhes do banco de dados que você criou;
+26. Na tela de detalhes que se abriu, na sessão "Segurança e conexão" copie o valor do Endpoint, será algo semelhante ao valor "usermicroservicedb.cbqgeakk0utc.us-east-2.rds.amazonaws.com";
+27. Em seu computador, acesse o seu terminal e digite os comandos abaixo com o endpoint e senha do seu banco de dados:
 ```
 //Endpoint
 echo -n 'usermicroservicedb.cbqgeakk0utc.us-east-2.rds.amazonaws.com' | base64
@@ -135,8 +136,8 @@ echo -n 'usermicroservicedb.cbqgeakk0utc.us-east-2.rds.amazonaws.com' | base64
 echo -n '123mudar' | base64
 //OUTPUT: MTIzbXVkYXI=
 ```
-13. Com os valores de saída, volte até a plataforma do Github, acesse o menu "Settings" do projeto, na tela que se abrir, clique no menu Security->Secrets and variables->Actions;
-14. Adicione uma "repository secret" chamada DB_HOST com o valor da saída do endpoint, e crie outra "repository secret" chamada DB_PASS com o valor da saída da senha;
+28. Com os valores de saída, volte até a plataforma do Github, acesse o menu "Settings" do projeto, na tela que se abrir, clique no menu Security->Secrets and variables->Actions;
+29. Adicione uma "repository secret" chamada DB_HOST com o valor da saída do endpoint, e crie outra "repository secret" chamada DB_PASS com o valor da saída da senha;
 
 ## 5. Create a Cluster Kubernetes in EKS:
 
@@ -210,6 +211,5 @@ kubectl get pods
 
 
 ## TODO:
-- add github actions (e2e tests);
 - add endpoint login with return token JWT;
 - add endpoints with auth (details, changedata, delete);
