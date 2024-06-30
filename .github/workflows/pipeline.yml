@@ -97,6 +97,7 @@ jobs:
         export USER_MICROSERVICE_URL="USER_MICROSERVICE_URL=http://$(kubectl get svc user-microservice-svc -n default -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')"        
         export USER_MICROSERVICE_URL=$(echo -n $USER_MICROSERVICE_URL | base64)
         echo $USER_MICROSERVICE_URL >> $GITHUB_OUTPUT
+        echo $USER_MICROSERVICE_URL
    
 
   testando-var:
