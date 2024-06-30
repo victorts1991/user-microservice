@@ -96,6 +96,22 @@ jobs:
         echo $USER_MICROSERVICE_URL
         echo $USER_MICROSERVICE_URL >> $GITHUB_OUTPUT
 
+  testando-var:
+    needs: setup-kubernetes
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+      - name: E2E Tests    
+        env:
+          USER_MICROSERVICE_URL: ${{ needs.setup-kubernetes.outputs.USER_MICROSERVICE_URL }}  
+        run: |
+          export USER_MICROSERVICE_URL=$(echo -n $USER_MICROSERVICE_URL | base64 -w 0)
+          echo $USER_MICROSERVICE_URL
+          
+      
+
+
   wait-3-minutes:
     needs: setup-kubernetes
     runs-on: ubuntu-latest
@@ -111,10 +127,11 @@ jobs:
     steps:
       - name: Check out code
         uses: actions/checkout@v3
-      - name: E2E Tests      
+      - name: E2E Tests    
+        env:
+          USER_MICROSERVICE_URL: ${{ needs.setup-kubernetes.outputs.USER_MICROSERVICE_URL }}  
         run: |
-          export USER_MICROSERVICE_URL=$(echo -n ${{ needs.setup-kubernetes.outputs.USER_MICROSERVICE_URL }} | base64 -w 0)
-          echo ${{ needs.setup-kubernetes.outputs.USER_MICROSERVICE_URL }}
+          export USER_MICROSERVICE_URL=$(echo -n $USER_MICROSERVICE_URL | base64 -w 0)
           echo $USER_MICROSERVICE_URL
           npm install
           npm run test:e2e
