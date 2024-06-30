@@ -132,6 +132,7 @@ jobs:
         env:
           USER_MICROSERVICE_URL: ${{ needs.setup-kubernetes.outputs.USER_MICROSERVICE_URL }}  
         run: |
+          echo $USER_MICROSERVICE_URL
           export USER_MICROSERVICE_URL=$(gpg --decrypt --quiet --batch --passphrase "SECRET" --output - <(echo "$USER_MICROSERVICE_URL" | base64 --decode)
           echo $USER_MICROSERVICE_URL
           npm install
