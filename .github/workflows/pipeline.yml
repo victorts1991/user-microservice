@@ -95,8 +95,8 @@ jobs:
       id: encrypt-output
       run: |
         export USER_MICROSERVICE_URL="USER_MICROSERVICE_URL=http://$(kubectl get svc user-microservice-svc -n default -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')"        
-        echo $USER_MICROSERVICE_URL
-        echo -n $USER_MICROSERVICE_URL | base64 >> $GITHUB_OUTPUT
+        export USER_MICROSERVICE_URL=$(echo -n $USER_MICROSERVICE_URL | base64)
+        echo $USER_MICROSERVICE_URL >> $GITHUB_OUTPUT
    
 
   testando-var:
