@@ -210,6 +210,6 @@ kubectl get pods
 
 
 ## TODO:
-- add github actions (e2e tests);
+- Teste do 0;
 - add endpoint login with return token JWT;
 - add endpoints with auth (details, changedata, delete);
