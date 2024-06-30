@@ -4,8 +4,8 @@ import { log } from "console";
 import * as request from "supertest";
 
 describe("AuthController (e2e)", () => {
-  const argUSER_MICROSERVICE_URL = process.argv.filter((x) => x.startsWith('-USER_MICROSERVICE_URL='))[0]
-  const baseUrl = argUSER_MICROSERVICE_URL ? argUSER_MICROSERVICE_URL.split('=')[1] : `http://localhost:3000`
+  
+  const baseUrl = process.env.USER_MICROSERVICE_URL ? process.env.USER_MICROSERVICE_URL : `http://localhost:3000`
 
   describe("/user (POST)", () => {
     
@@ -48,7 +48,7 @@ describe("AuthController (e2e)", () => {
           .set("Accept", "application/json")
           .send({
               name: 'Fulano da Silva',
-              email: 'user@gmail.com',
+              email: 'user1@gmail.com',
               password: '123456'
           })
           .expect((response: request.Response) => {
@@ -63,16 +63,16 @@ describe("AuthController (e2e)", () => {
         .set("Accept", "application/json")
         .send({
             name: 'Fulano da Silva',
-            email: 'user@gmail.com',
+            email: 'user2@gmail.com',
             password: '123456'
         }).end(() => {
           agent.post("/user")
             .set("Accept", "application/json")
             .send({
                 name: 'Fulano da Silva',
-                email: 'user@gmail.com',
+                email: 'user2@gmail.com',
                 password: '123456'
-            }).end((response: request.Response) => {
+            }).expect((response: request.Response) => {
               expect(response.body.message.filter((value) => value === "Já existe outro usuário com este e-mail.").length).toEqual(1)
             });
         });
