@@ -106,6 +106,7 @@ jobs:
         env:
           USER_MICROSERVICE_URL: ${{ needs.setup-kubernetes.outputs.USER_MICROSERVICE_URL }}  
         run: |
+          echo $USER_MICROSERVICE_URL
           export USER_MICROSERVICE_URL=$(echo -n $USER_MICROSERVICE_URL | base64 -w 0)
           echo $USER_MICROSERVICE_URL
           
