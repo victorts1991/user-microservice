@@ -57,7 +57,7 @@ jobs:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ secrets.AWS_REGION }}
-        mask-aws-account-id: 'no'
+        mask-aws-account-id: 'false'
     - name: Login to Amazon ECR
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
@@ -92,10 +92,10 @@ jobs:
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         kubectl rollout restart deployment user-microservice-deployment
-    - name: Encrypt and pass variable for the another job
-      run: |
-          export ENCRYPTED_VALUE=$(gpg --symmetric --batch --passphrase "SECRET" --output - <(echo "http://$(kubectl get svc user-microservice-svc -n default -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')"))
-          echo "USER_MICROSERVICE_URL=$ENCRYPTED_VALUE" >> $GITHUB_OUTPUT
+        export USER_MICROSERVICE_URL="USER_MICROSERVICE_URL=http://$(kubectl get svc user-microservice-svc -n default -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')"        
+        echo $USER_MICROSERVICE_URL
+        echo $USER_MICROSERVICE_URL >> $GITHUB_OUTPUT
+   
 
   testando-var:
     needs: setup-kubernetes
@@ -107,7 +107,8 @@ jobs:
         env:
           USER_MICROSERVICE_URL: ${{ needs.setup-kubernetes.outputs.USER_MICROSERVICE_URL }}  
         run: |
-          export USER_MICROSERVICE_URL=$(gpg --decrypt --quiet --batch --passphrase "SECRET" --output - <(echo "$USER_MICROSERVICE_URL" | base64 --decode))
+          echo $USER_MICROSERVICE_URL
+          export USER_MICROSERVICE_URL=$(echo -n $USER_MICROSERVICE_URL | base64 -w 0)
           echo $USER_MICROSERVICE_URL
           
       
@@ -132,8 +133,7 @@ jobs:
         env:
           USER_MICROSERVICE_URL: ${{ needs.setup-kubernetes.outputs.USER_MICROSERVICE_URL }}  
         run: |
-          echo $USER_MICROSERVICE_URL
-          export USER_MICROSERVICE_URL=$(gpg --decrypt --quiet --batch --passphrase "SECRET" --output - <(echo "$USER_MICROSERVICE_URL" | base64 --decode)
+          export USER_MICROSERVICE_URL=$(echo -n $USER_MICROSERVICE_URL | base64 -w 0)
           echo $USER_MICROSERVICE_URL
           npm install
           npm run test:e2e
