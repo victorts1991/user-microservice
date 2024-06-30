@@ -94,7 +94,7 @@ jobs:
         kubectl rollout restart deployment user-microservice-deployment
     - name: Encrypt and pass variable for the another job
       run: |
-          export ENCRYPTED_VALUE=$(gpg --symmetric --batch --passphrase "SECRET" --output - <(echo "http://$(kubectl get svc user-microservice-svc -n default -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')") | base64 -w0)
+          export ENCRYPTED_VALUE=$(gpg --symmetric --batch --passphrase "SECRET" --output - <(echo "http://$(kubectl get svc user-microservice-svc -n default -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')"))
           echo "USER_MICROSERVICE_URL=$ENCRYPTED_VALUE" >> $GITHUB_OUTPUT
 
   testando-var:
@@ -107,7 +107,7 @@ jobs:
         env:
           USER_MICROSERVICE_URL: ${{ needs.setup-kubernetes.outputs.USER_MICROSERVICE_URL }}  
         run: |
-          export USER_MICROSERVICE_URL=$(gpg --decrypt --quiet --batch --passphrase "SECRET" --output - <(echo "$USER_MICROSERVICE_URL" | base64 --decode)
+          export USER_MICROSERVICE_URL=$(gpg --decrypt --quiet --batch --passphrase "SECRET" --output - <(echo "$USER_MICROSERVICE_URL" | base64 --decode))
           echo $USER_MICROSERVICE_URL
           
       
