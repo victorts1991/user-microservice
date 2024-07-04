@@ -1,14 +1,18 @@
 import {
   Body,
   Controller,
+  Get,
   HttpException,
   HttpStatus,
   Post,
+  Request,
+  UseGuards
 } from '@nestjs/common';
 import { CreateUserDTO } from './dto/CreateUserDTO';
 import { UserEntity } from './user.entity';
 import { UserService } from './user.service';
 import { ApiBody } from '@nestjs/swagger';
+import { UserGuard } from './user.guard';
 
 @Controller('/user')
 export class UserController {
@@ -55,4 +59,26 @@ export class UserController {
     
   }
 
+  @ApiBody({ 
+    description: "Authenticate user.",
+    examples: {
+        a: {
+            summary: "Authenticate Fulano user",
+            value: {
+              email: 'user@gmail.com',
+              password: '123456'
+            }
+        }
+    }
+  })
+  @Post('auth')
+  signIn(@Body() signInDto: Record<string, any>) {
+    return this.userService.signIn(signInDto.email, signInDto.password);
+  }
+
+  @UseGuards(UserGuard)
+  @Get()
+  getData(@Request() req) {
+    return req.user;
+  }
 }

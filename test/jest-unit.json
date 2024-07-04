@@ -18,6 +18,7 @@
         "db/*",
         "db/migrations/*",
         "user/user.module.ts",
+        "user/user.guard.ts",
         "config/*",
         "user/*.e2e-spec.ts",
         "health/*"

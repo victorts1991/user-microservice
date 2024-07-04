@@ -9,10 +9,13 @@ import { ConfigModule } from '@nestjs/config';
 import { plainToInstance } from 'class-transformer';
 import { validateSync } from 'class-validator';
 import { TypeORMError } from 'typeorm';
-import { HttpException } from '@nestjs/common';
+import { CanActivate, HttpException } from '@nestjs/common';
 import { log } from 'console';
+import { JwtService } from '@nestjs/jwt';
+import { UserGuard } from './user.guard';
+import { createRequest } from 'node-mocks-http';
 
-describe('Create user', () => {
+describe('User', () => {
     let userController: UserController;
     let userService: UserService;
 
@@ -22,6 +25,8 @@ describe('Create user', () => {
         findOne: jest.fn(),
         delete: jest.fn(),
     };
+
+    const mockGuard: CanActivate = { canActivate: jest.fn(() => true) };
 
     beforeEach(async () => {
         const moduleRef = await Test.createTestingModule({
@@ -33,8 +38,17 @@ describe('Create user', () => {
                     provide: getRepositoryToken(UserEntity),
                     useValue: mockUserEntityRepository,
                 },
+                {
+                    provide: JwtService,
+                    useValue: {
+                        signAsync: jest.fn(),
+                    },
+                },
             ],
-        }).compile();
+        })
+        .overrideGuard(UserGuard)
+        .useValue(mockGuard)
+        .compile();
 
         userService = moduleRef.get<UserService>(UserService);
         userController = moduleRef.get<UserController>(UserController);
@@ -98,7 +112,6 @@ describe('Create user', () => {
         }
     })
 
-        
     it('should return an object with user created and a sucess message', async () => {
         const userEntity = new UserEntity();
         userEntity.email = "user@gmail.com";
@@ -117,8 +130,41 @@ describe('Create user', () => {
             message: 'Usuário criado com sucesso.',
         });
     });
+
+    it('should return an object with an access_token', async () => {
+        let signInResult = {
+            access_token: "abc"
+        }
+
+        jest.spyOn(userService, 'signIn' as never).mockImplementation(() => signInResult as never);
+
+        let signInDto = {
+            email: 'fulano@gmail.com',
+            password: '123456'
+        }
+
+        expect(await userController.signIn(signInDto)).toEqual(signInResult);
+    });
+
+    /*it('should return an object with an user data', async () => {
+        
+        
+
+        const mockRequest = createRequest({
+            method: 'GET',
+            url: '/user',
+            headers: {
+                authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjFjY2VmNmU0LWViZjctNDAwNC1hYWFiLTI0Nzg1MjgzN2ZlMiIsIm5hbWUiOiJGdWxhbm8gZGEgU2lsdmEiLCJlbWFpbCI6InVzZXJAZ21haWwuY29tIiwiaWF0IjoxNzIwMDgyMzgzLCJleHAiOjE3MjAwODU5ODN9._zbQICz2PC8rhj40ExwN6g1hh8KEwgM32DnsEwPOOPI'
+            }
+        });
+
+        let response = await userController.getData(mockRequest)
+
+        expect(response.name).toEqual("Fulano da Silva");
+    });*/
   
 });
+
 
 function getValidateSync(dto, object){
     const dtoObject = plainToInstance(dto, object);

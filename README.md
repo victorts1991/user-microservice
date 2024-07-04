@@ -210,5 +210,5 @@ kubectl get pods
 ```
 
 ## TODO:
-- add endpoint login with return token JWT;
+- 
 - add endpoints with auth (details, changedata, delete);

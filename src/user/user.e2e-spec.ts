@@ -3,7 +3,7 @@ import { log } from "console";
 
 import * as request from "supertest";
 
-describe("AuthController (e2e)", () => {
+describe("UserController (e2e)", () => {
   
   const baseUrl = process.env.USER_MICROSERVICE_URL ? process.env.USER_MICROSERVICE_URL : `http://localhost:3000`
 
@@ -77,6 +77,57 @@ describe("AuthController (e2e)", () => {
             });
         });
     });
+
+    it("it should return 401", () => {
+      var agent = request(baseUrl);
+      
+      agent.post("/user/auth")
+        .set("Accept", "application/json")
+        .send({
+            email: 'user2@gmail.com',
+            password: '123'
+        }).expect(HttpStatus.UNAUTHORIZED)
+        
+    });
+
+    it("it should return a token", () => {
+      var agent = request(baseUrl);
+      
+      agent.post("/user/auth")
+        .set("Accept", "application/json")
+        .send({
+            email: 'user2@gmail.com',
+            password: '123456'
+        }).expect((response: request.Response) => {
+          expect(response.body).toHaveBeenCalledWith("access_token")
+        });
+        
+    });
+
+    it("it should return a user details", () => {
+      var agent = request(baseUrl);
+
+      agent.post("/user/auth")
+        .set("Accept", "application/json")
+        .send({
+            email: 'user2@gmail.com',
+            password: '123456'
+        }).expect((response: request.Response) => {
+          agent.get("/user")
+            .set("Accept", "application/json")
+            .set("Authentication", "Bearer " + response.body.access_token)
+            .expect((response: request.Response) => {
+              expect(response.body).toHaveBeenCalledWith("name")
+              expect(response.body.name).toEqual("Fulano da Silva")
+            });
+        });
+
+      
+      
+        
+    });
+
+
 
   });
 });
