@@ -11,10 +11,9 @@ import { CanActivate } from '@nestjs/common';
 import { log } from 'console';
 import { JwtService } from '@nestjs/jwt';
 import { UserGuard } from './user.guard';
+import { UpdateUserDTO } from './dto/UpdateUserDTO';
 
 //test controller, dto and use cases
-
-const ACCESS_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjUzMTFkZWY2LWFiM2ItNDc4Ni04NmExLTBhZGYxMzM2YmRjOCIsIm5hbWUiOiJGdWxhbm8gZGEgU2lsdmEiLCJlbWFpbCI6InVzZXJAZ21haWwuY29tIiwiaWF0IjoxNzIzOTgzMzkxLCJleHAiOjE3MjM5ODY5OTF9.W8jxrwlMsBfn_U1w5amgxfDBmuIQTzUNFNPIN8xRMMw'
 
 describe('User', () => {
     let userController: UserController;
@@ -55,7 +54,7 @@ describe('User', () => {
         userController = moduleRef.get<UserController>(UserController);
     });
   
-    it('should be valid with valid properties', () => {
+    it('should be valid with valid properties in create user', () => {
        
         const validateSync1 = getValidateSync(CreateUserDTO, {
             email: null,
@@ -89,7 +88,7 @@ describe('User', () => {
         expect(validateSync3).toHaveLength(0);
     });
 
-    it('should validate if the email is duplicate', async () => {
+    it('should validate if the email is duplicate in create user', async () => {
         const userEntity = new UserEntity();
         userEntity.email = "user@gmail.com";
         userEntity.password ="123456";
@@ -113,7 +112,7 @@ describe('User', () => {
         }
     })
 
-    it('should return an object with user created and a sucess message', async () => {
+    it('should return an object with user created and a sucess message in create user', async () => {
         const userEntity = new UserEntity();
         userEntity.email = "user@gmail.com";
         userEntity.password ="123456";
@@ -147,7 +146,7 @@ describe('User', () => {
         expect(await userController.signIn(signInDto)).toEqual(signInResult);
     });
 
-    it('it should return a user details', async () => {
+    it('it should return an user details', async () => {
         let getUserResult = {
             id: 'abc', 
             name: 'Fulano da Silva', 
@@ -158,8 +157,80 @@ describe('User', () => {
 
         expect(await userController.getData({ user: { id: 'abc' } })).toEqual(getUserResult);
     });
+
+    it('should be valid with valid properties in update user', () => {
+       
+        const validateSync1 = getValidateSync(UpdateUserDTO, {
+            email: null,
+            name: null,
+        });
+        expect(validateSync1).toHaveLength(2);
+        expect(validateSync1.filter((value) => value.property === 'name' && value.constraints.isNotEmpty === 'O nome não pode ser vazio.'))
+            .toHaveLength(1);
+        expect(validateSync1.filter((value) => value.property === 'email' && value.constraints.isNotEmpty === 'O e-mail não pode ser vazio.'))
+            .toHaveLength(1);
+
+        const validateSync2 = getValidateSync(UpdateUserDTO, {
+            email: "usergmailcom",
+            name: 'Fulano da Silva',
+        });
+        expect(validateSync2).toHaveLength(1);
+        expect(validateSync2.filter((value) => value.property === 'email' && value.constraints.isEmail === 'O e-mail informado é inválido.'))
+            .toHaveLength(1);
+
+        const validateSync3 = getValidateSync(UpdateUserDTO, {
+            email: "user@gmail.com",
+            name: 'Fulano da Silva',
+        });
+        expect(validateSync3).toHaveLength(0);
+    });
+
+    it('should validate if the email is duplicate in update user', async () => {
+        const userEntity = new UserEntity();
+        userEntity.email = "user@gmail.com";
+        userEntity.name = 'Fulano da Silva';
+        
+        jest.spyOn(userService, 'updateUser').mockImplementation(() => {
+            throw new TypeORMError('duplicate key value violates unique constraint');
+        });
+
+        const userData: UpdateUserDTO = new UpdateUserDTO()
+        userData.email = userEntity.email
+        userData.name = userEntity.name
+
+        try {
+            await userController.updateData({ user: { id: 'abc' } }, userData)
+        }catch(error) {
+            //log(error.response)
+            expect(error.response.status).toEqual(400);
+            expect(error.response.message).toEqual([ 'Já existe outro usuário com este e-mail.' ]);
+        }
+    })
+
+    it('should return an object with user created and a sucess message in update user', async () => {
+        const userEntity = new UserEntity();
+        userEntity.email = "user@gmail.com";
+        userEntity.name = 'Fulano da Silva';
+        
+        jest.spyOn(userService, 'updateUser' as never).mockImplementation(() => userEntity as never);
+
+        const userData: UpdateUserDTO = new UpdateUserDTO()
+        userData.email = userEntity.email
+        userData.name = userEntity.name
+
+        expect(await userController.updateData({ user: { id: 'abc' } }, userData)).toEqual({
+            message: "Usuário atualizado com sucesso.",
+            user: {
+              email: "user@gmail.com",
+              id: "abc",
+              name: "Fulano da Silva"
+            },
+        });
+    });
   
 });
+
+
 
 
 function getValidateSync(dto, object){

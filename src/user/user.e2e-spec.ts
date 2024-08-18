@@ -48,7 +48,7 @@ describe("UserController (e2e)", () => {
           .set("Accept", "application/json")
           .send({
               name: 'Fulano da Silva',
-              email: 'user1@gmail.com',
+              email: 'user1@gmailtest.com',
               password: '123456'
           })
           .expect((response: request.Response) => {
@@ -57,77 +57,161 @@ describe("UserController (e2e)", () => {
           .expect(HttpStatus.CREATED)
     });
 
-    it("it should validate if the email is duplicate", () => {
-      var agent = request(baseUrl);
-      agent.post("/user")
+    it("it should validate if the email is duplicate", async () => {
+      await request(baseUrl).post("/user")
         .set("Accept", "application/json")
         .send({
             name: 'Fulano da Silva',
-            email: 'user2@gmail.com',
+            email: 'user2@gmailtest.com',
             password: '123456'
-        }).end(() => {
-          agent.post("/user")
-            .set("Accept", "application/json")
-            .send({
-                name: 'Fulano da Silva',
-                email: 'user2@gmail.com',
-                password: '123456'
-            }).expect((response: request.Response) => {
-              expect(response.body.message.filter((value) => value === "Já existe outro usuário com este e-mail.").length).toEqual(1)
-            });
+        })
+        
+
+      return request(baseUrl).post("/user")
+        .set("Accept", "application/json")
+        .send({
+            name: 'Fulano da Silva',
+            email: 'user2@gmailtest.com',
+            password: '123456'
+        }).expect((response: request.Response) => {
+          
+          expect(response.body.message.filter((value) => value === "Já existe outro usuário com este e-mail.").length).toEqual(1)
+          
         });
+        
+      
     });
 
     it("it should return 401", () => {
-      var agent = request(baseUrl);
       
-      agent.post("/user/auth")
+      return request(baseUrl).post("/user/auth")
         .set("Accept", "application/json")
         .send({
-            email: 'user2@gmail.com',
+            email: 'user2@gmailtest.com',
             password: '123'
         }).expect(HttpStatus.UNAUTHORIZED)
         
     });
 
     it("it should return a token", () => {
-      var agent = request(baseUrl);
       
-      agent.post("/user/auth")
+      return request(baseUrl).post("/user/auth")
         .set("Accept", "application/json")
         .send({
-            email: 'user2@gmail.com',
+            email: 'user2@gmailtest.com',
             password: '123456'
         }).expect((response: request.Response) => {
-          expect(response.body).toHaveBeenCalledWith("access_token")
+          expect(response.body).toHaveProperty("access_token")
         });
         
     });
 
-    it("it should return a user details", () => {
-      var agent = request(baseUrl);
-
-      agent.post("/user/auth")
+    it("it should return a user details", async () => {
+      const res = await request(baseUrl).post("/user/auth")
         .set("Accept", "application/json")
         .send({
-            email: 'user2@gmail.com',
+            email: 'user2@gmailtest.com',
             password: '123456'
-        }).expect((response: request.Response) => {
-          agent.get("/user")
-            .set("Accept", "application/json")
-            .set("Authentication", "Bearer " + response.body.access_token)
-            .expect((response: request.Response) => {
-              expect(response.body).toHaveBeenCalledWith("name")
-              expect(response.body.name).toEqual("Fulano da Silva")
-            });
-        });
+        })
 
-      
-      
+      const token = res.body.access_token
+      //log('*******::::::::' + token)
+        
+      return request(baseUrl).get("/user")
+          .set("Accept", "application/json")
+          .set("Authorization", "Bearer " + token)
+          .expect((response: request.Response) => {
+            expect(response.body).toHaveProperty("name")
+            expect(response.body.name).toEqual("Fulano da Silva")
+          });
+    });
+
+    it("it should return errors for name, email empty in update user", async () => {
+
+      const res = await request(baseUrl).post("/user/auth")
+        .set("Accept", "application/json")
+        .send({
+            email: 'user2@gmailtest.com',
+            password: '123456'
+        })
+      const token = res.body.access_token        
+        
+      return request(baseUrl).put("/user")
+        .set("Accept", "application/json")
+        .set("Authorization", "Bearer " + token)
+        .send({
+          name: null,
+          email: null,
+        })
+        .expect((response: request.Response) => {
+          expect(response.body.message.filter((value) => value === "O nome não pode ser vazio.").length).toEqual(1)
+          expect(response.body.message.filter((value) => value === "O e-mail não pode ser vazio.").length).toEqual(1)
+        });
         
     });
 
+    it("it should update a user and return the user object", async () => {
+      
+      const res = await request(baseUrl).post("/user/auth")
+        .set("Accept", "application/json")
+        .send({
+            email: 'user2@gmailtest.com',
+            password: '123456'
+        })
+        const token = res.body.access_token    
 
+        return request(baseUrl).put("/user")
+          .set("Accept", "application/json")
+          .set("Authorization", "Bearer " + token)
+          .send({
+            name: 'Fulano da Silva',
+            email: 'user5@gmailtest.com',
+          })
+          .expect((response: request.Response) => {
+            expect(response.body.message).toEqual('Usuário atualizado com sucesso.')
+          });
+      
+    });
 
+    it("it should validate if the email is duplicate in update user", async () => {
+
+      //create user with another email
+      const res = await request(baseUrl)
+        .post("/user")
+        .set("Accept", "application/json")
+        .send({
+            name: 'Fulano da Silva Segundo',
+            email: 'user222@gmailtest.com',
+            password: '123456'
+        })
+      
+      const res2 = await request(baseUrl).post("/user/auth")
+        .set("Accept", "application/json")
+        .send({
+            email: 'user5@gmailtest.com',
+            password: '123456'
+        })
+      const token = res2.body.access_token 
+
+      return request(baseUrl).put("/user")
+          .set("Accept", "application/json")
+          .set("Authorization", "Bearer " + token)
+          .send({
+            name: 'Fulano da Silva',
+            email: 'user222@gmailtest.com',
+          })
+          .expect((response: request.Response) => {
+            //log(response)
+            expect(response.body.message.filter((value) => value === "Já existe outro usuário com este e-mail.").length).toEqual(1)
+          });
+        
+      
+    });
+
+    afterAll(() => {
+      return request(baseUrl)
+        .get("/user/delete-test-mass")
+        .set("Accept", "application/json")
+    })
   });
 });
