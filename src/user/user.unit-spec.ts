@@ -12,6 +12,7 @@ import { log } from 'console';
 import { JwtService } from '@nestjs/jwt';
 import { UserGuard } from './user.guard';
 import { UpdateUserDTO } from './dto/UpdateUserDTO';
+import { UpdatePassUserDTO } from './dto/UpdatePassUserDTO';
 
 //test controller, dto and use cases
 
@@ -227,6 +228,58 @@ describe('User', () => {
             },
         });
     });
+
+    it("it should return errors for oldPassword and newPassword empty in update password", async () => {
+        const validateSync1 = getValidateSync(UpdatePassUserDTO, {
+            oldPassword: null,
+            newPassword: null,
+        });
+        expect(validateSync1).toHaveLength(2);
+        
+        expect(validateSync1.filter((value) => value.property === 'oldPassword' && value.constraints.isNotEmpty === 'A senha atual não pode ser vazia.'))
+            .toHaveLength(1);
+        expect(validateSync1.filter((value) => value.property === 'newPassword' && value.constraints.minLength === 'A nova senha precisa ter pelo menos 6 caracteres.'))
+            .toHaveLength(1);
+        expect(validateSync1.filter((value) => value.property === 'newPassword' && value.constraints.isNotEmpty === 'A nova senha não pode ser vazia.'))
+            .toHaveLength(1);
+
+
+        const validateSync2 = getValidateSync(UpdatePassUserDTO, {
+            oldPassword: "123456",
+            newPassword: '654321',
+        });
+        expect(validateSync2).toHaveLength(0);
+
+        jest.spyOn(userService, 'updateUserPassword' as never).mockImplementation(() => { 
+            throw new Error("A senha atual não está correta.")
+        });
+
+        const userData: UpdatePassUserDTO = new UpdatePassUserDTO()
+        userData.oldPassword = null
+        userData.newPassword = null
+
+        try {
+            await userController.updatePassword({ user: { id: 'abc' } }, userData)
+        }catch(error) {
+            //log(error.response)
+            expect(error.response.status).toEqual(400);
+            expect(error.response.message).toEqual([ 'A senha atual não está correta.' ]);
+        }
+
+    })
+
+    it("it should return success for update password", async () => {
+        
+        jest.spyOn(userService, 'updateUserPassword' as never).mockImplementation(() => true as never);
+
+        const userData: UpdatePassUserDTO = new UpdatePassUserDTO()
+        userData.oldPassword = '123456'
+        userData.newPassword = '654321'
+
+        expect(await userController.updatePassword({ user: { id: 'abc' } }, userData)).toEqual({
+            message: "Senha atualizado com sucesso."
+        });
+    })
   
 });
 

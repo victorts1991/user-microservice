@@ -167,10 +167,4 @@ export class UserController {
     }
   }
 
-  @Get('delete-test-mass')
-  async deleteTestMass() {
-    await this.userService.deleteTestMass()
-    return true
-  }
-
 }

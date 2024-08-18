@@ -47,7 +47,7 @@ export class UserService {
     const isMatch = await bcrypt.compare(userData.oldPassword, user?.password);
 
     if (!isMatch) {
-      throw new Error('A senha atual não está correta');
+      throw new Error('A senha atual não está correta.');
     }
     
     const hashPass = await bcrypt.hash(userData.newPassword, this.saltOrRounds)

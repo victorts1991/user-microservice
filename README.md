@@ -210,6 +210,3 @@ aws eks update-kubeconfig --name user-microservice-cluster --region=us-east-2
 
 kubectl get pods
 ```
-
-## TODO:
-- add e2e and unit tests for change password

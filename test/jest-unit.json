@@ -16,7 +16,7 @@
       ],
      
       "coveragePathIgnorePatterns": [
-        
+        "user/delete-test-mass.controller.ts"
       ],
       "coverageDirectory": "../coverage",
       "testEnvironment": "node"

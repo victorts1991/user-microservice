@@ -208,9 +208,77 @@ describe("UserController (e2e)", () => {
       
     });
 
+    it("it should return errors for oldPassword and newPassword empty in update password", async () => {
+      const res = await request(baseUrl).post("/user/auth")
+        .set("Accept", "application/json")
+        .send({
+            email: 'user5@gmailtest.com',
+            password: '123456'
+        })
+      const token = res.body.access_token        
+        
+      return request(baseUrl).put("/user/password")
+        .set("Accept", "application/json")
+        .set("Authorization", "Bearer " + token)
+        .send({
+          oldPassword: null,
+          newPassword: null,
+        })
+        .expect((response: request.Response) => {
+          
+          expect(response.body.message.filter((value) => value === "A senha atual não pode ser vazia.").length).toEqual(1)
+          expect(response.body.message.filter((value) => value === "A nova senha precisa ter pelo menos 6 caracteres.").length).toEqual(1)
+          expect(response.body.message.filter((value) => value === "A nova senha não pode ser vazia.").length).toEqual(1)
+        });
+
+    })
+
+    it("it should return errors for oldPassword incorrect in update password", async () => {
+      const res = await request(baseUrl).post("/user/auth")
+      .set("Accept", "application/json")
+      .send({
+          email: 'user5@gmailtest.com',
+          password: '123456'
+      })
+      const token = res.body.access_token        
+        
+      return request(baseUrl).put("/user/password")
+        .set("Accept", "application/json")
+        .set("Authorization", "Bearer " + token)
+        .send({
+          oldPassword: "aaaaaa",
+          newPassword: "bbbbbb",
+        })
+        .expect((response: request.Response) => {
+          expect(response.body.message.filter((value) => value === "A senha atual não está correta.").length).toEqual(1)
+        });
+
+    })
+
+    it("it should return success for update password", async () => {
+      const res = await request(baseUrl).post("/user/auth")
+      .set("Accept", "application/json")
+      .send({
+          email: 'user5@gmailtest.com',
+          password: '123456'
+      })
+      const token = res.body.access_token        
+        
+      return request(baseUrl).put("/user/password")
+        .set("Accept", "application/json")
+        .set("Authorization", "Bearer " + token)
+        .send({
+          oldPassword: "123456",
+          newPassword: "bbbbbb",
+        })
+        .expect((response: request.Response) => {
+          expect(response.body.message).toEqual('Senha atualizado com sucesso.')
+        });
+    })
+
     afterAll(() => {
       return request(baseUrl)
-        .get("/user/delete-test-mass")
+        .get("/delete-test-mass")
         .set("Accept", "application/json")
     })
   });
