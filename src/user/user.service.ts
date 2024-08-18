@@ -46,4 +46,11 @@ export class UserService {
       access_token: await this.jwtService.signAsync(payload),
     };
   }
+
+  async getUser(id: string) : Promise<UserEntity> {
+
+    const user = await this.userRepository.findOneBy({ id: id });
+
+    return user;
+  }
 }

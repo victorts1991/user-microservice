@@ -3,17 +3,18 @@ import { UserController } from './user.controller';
 import { UserService } from './user.service';
 import { CreateUserDTO } from './dto/CreateUserDTO';
 import { UserEntity } from './user.entity';
-import { TypeOrmModule, getRepositoryToken } from '@nestjs/typeorm';
-import { PostgresConfigService } from '../config/postgres.config.service';
-import { ConfigModule } from '@nestjs/config';
+import { getRepositoryToken } from '@nestjs/typeorm';
 import { plainToInstance } from 'class-transformer';
 import { validateSync } from 'class-validator';
 import { TypeORMError } from 'typeorm';
-import { CanActivate, HttpException } from '@nestjs/common';
+import { CanActivate } from '@nestjs/common';
 import { log } from 'console';
 import { JwtService } from '@nestjs/jwt';
 import { UserGuard } from './user.guard';
-import { createRequest } from 'node-mocks-http';
+
+//test controller, dto and use cases
+
+const ACCESS_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjUzMTFkZWY2LWFiM2ItNDc4Ni04NmExLTBhZGYxMzM2YmRjOCIsIm5hbWUiOiJGdWxhbm8gZGEgU2lsdmEiLCJlbWFpbCI6InVzZXJAZ21haWwuY29tIiwiaWF0IjoxNzIzOTgzMzkxLCJleHAiOjE3MjM5ODY5OTF9.W8jxrwlMsBfn_U1w5amgxfDBmuIQTzUNFNPIN8xRMMw'
 
 describe('User', () => {
     let userController: UserController;
@@ -146,22 +147,17 @@ describe('User', () => {
         expect(await userController.signIn(signInDto)).toEqual(signInResult);
     });
 
-    /*it('should return an object with an user data', async () => {
-        
-        
+    it('it should return a user details', async () => {
+        let getUserResult = {
+            id: 'abc', 
+            name: 'Fulano da Silva', 
+            email: 'user@email.com'
+        }
 
-        const mockRequest = createRequest({
-            method: 'GET',
-            url: '/user',
-            headers: {
-                authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjFjY2VmNmU0LWViZjctNDAwNC1hYWFiLTI0Nzg1MjgzN2ZlMiIsIm5hbWUiOiJGdWxhbm8gZGEgU2lsdmEiLCJlbWFpbCI6InVzZXJAZ21haWwuY29tIiwiaWF0IjoxNzIwMDgyMzgzLCJleHAiOjE3MjAwODU5ODN9._zbQICz2PC8rhj40ExwN6g1hh8KEwgM32DnsEwPOOPI'
-            }
-        });
+        jest.spyOn(userService, 'getUser' as never).mockImplementation(() => getUserResult as never);
 
-        let response = await userController.getData(mockRequest)
-
-        expect(response.name).toEqual("Fulano da Silva");
-    });*/
+        expect(await userController.getData({ user: { id: 'abc' } })).toEqual(getUserResult);
+    });
   
 });
 

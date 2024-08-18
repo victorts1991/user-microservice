@@ -72,13 +72,18 @@ export class UserController {
     }
   })
   @Post('auth')
-  signIn(@Body() signInDto: Record<string, any>) {
-    return this.userService.signIn(signInDto.email, signInDto.password);
+  async signIn(@Body() signInDto: Record<string, any>) {
+    return await this.userService.signIn(signInDto.email, signInDto.password);
   }
 
   @UseGuards(UserGuard)
   @Get()
-  getData(@Request() req) {
-    return req.user;
+  async getData(@Request() req) {
+    const user = await this.userService.getUser(req.user.id);
+    return {
+      id: user.id,
+      name: user.name,
+      email: user.email
+    }
   }
 }

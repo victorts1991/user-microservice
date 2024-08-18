@@ -210,5 +210,4 @@ kubectl get pods
 ```
 
 ## TODO:
-- 
-- add endpoints with auth (details, changedata, delete);
+- add endpoints with auth ( changedata, delete);
