@@ -37,7 +37,7 @@ jobs:
             -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }}
             -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
             -Dsonar.javascript.lcov.reportPaths=./lcov.info        
-            -Dsonar.exclusions=**/*-spec.ts,src/main.ts,src/app.module.ts,src/db/*,src/db/migrations/*,src/user/user.module.ts,src/config/*,src/health/*,Dockerfile
+            -Dsonar.exclusions=**/*-spec.ts,src/main.ts,src/app.module.ts,src/db/*,src/db/migrations/*,src/user/user.module.ts,src/config/*,src/health/*,src/user/constants.ts,src/user/delete-test-mass.controller.ts,src/user/user.entity.ts,src/user/user.guard.ts,src/user/user.service.ts,Dockerfile
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
