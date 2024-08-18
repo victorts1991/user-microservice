@@ -3,16 +3,20 @@ import { UserController } from './user.controller';
 import { UserService } from './user.service';
 import { CreateUserDTO } from './dto/CreateUserDTO';
 import { UserEntity } from './user.entity';
-import { TypeOrmModule, getRepositoryToken } from '@nestjs/typeorm';
-import { PostgresConfigService } from '../config/postgres.config.service';
-import { ConfigModule } from '@nestjs/config';
+import { getRepositoryToken } from '@nestjs/typeorm';
 import { plainToInstance } from 'class-transformer';
 import { validateSync } from 'class-validator';
 import { TypeORMError } from 'typeorm';
-import { HttpException } from '@nestjs/common';
+import { CanActivate } from '@nestjs/common';
 import { log } from 'console';
+import { JwtService } from '@nestjs/jwt';
+import { UserGuard } from './user.guard';
+import { UpdateUserDTO } from './dto/UpdateUserDTO';
+import { UpdatePassUserDTO } from './dto/UpdatePassUserDTO';
 
-describe('Create user', () => {
+//test controller, dto and use cases
+
+describe('User', () => {
     let userController: UserController;
     let userService: UserService;
 
@@ -22,6 +26,8 @@ describe('Create user', () => {
         findOne: jest.fn(),
         delete: jest.fn(),
     };
+
+    const mockGuard: CanActivate = { canActivate: jest.fn(() => true) };
 
     beforeEach(async () => {
         const moduleRef = await Test.createTestingModule({
@@ -33,14 +39,23 @@ describe('Create user', () => {
                     provide: getRepositoryToken(UserEntity),
                     useValue: mockUserEntityRepository,
                 },
+                {
+                    provide: JwtService,
+                    useValue: {
+                        signAsync: jest.fn(),
+                    },
+                },
             ],
-        }).compile();
+        })
+        .overrideGuard(UserGuard)
+        .useValue(mockGuard)
+        .compile();
 
         userService = moduleRef.get<UserService>(UserService);
         userController = moduleRef.get<UserController>(UserController);
     });
   
-    it('should be valid with valid properties', () => {
+    it('should be valid with valid properties in create user', () => {
        
         const validateSync1 = getValidateSync(CreateUserDTO, {
             email: null,
@@ -74,7 +89,7 @@ describe('Create user', () => {
         expect(validateSync3).toHaveLength(0);
     });
 
-    it('should validate if the email is duplicate', async () => {
+    it('should validate if the email is duplicate in create user', async () => {
         const userEntity = new UserEntity();
         userEntity.email = "user@gmail.com";
         userEntity.password ="123456";
@@ -98,8 +113,7 @@ describe('Create user', () => {
         }
     })
 
-        
-    it('should return an object with user created and a sucess message', async () => {
+    it('should return an object with user created and a sucess message in create user', async () => {
         const userEntity = new UserEntity();
         userEntity.email = "user@gmail.com";
         userEntity.password ="123456";
@@ -117,8 +131,160 @@ describe('Create user', () => {
             message: 'Usuário criado com sucesso.',
         });
     });
+
+    it('should return an object with an access_token', async () => {
+        let signInResult = {
+            access_token: "abc"
+        }
+
+        jest.spyOn(userService, 'signIn' as never).mockImplementation(() => signInResult as never);
+
+        let signInDto = {
+            email: 'fulano@gmail.com',
+            password: '123456'
+        }
+
+        expect(await userController.signIn(signInDto)).toEqual(signInResult);
+    });
+
+    it('it should return an user details', async () => {
+        let getUserResult = {
+            id: 'abc', 
+            name: 'Fulano da Silva', 
+            email: 'user@email.com'
+        }
+
+        jest.spyOn(userService, 'getUser' as never).mockImplementation(() => getUserResult as never);
+
+        expect(await userController.getData({ user: { id: 'abc' } })).toEqual(getUserResult);
+    });
+
+    it('should be valid with valid properties in update user', () => {
+       
+        const validateSync1 = getValidateSync(UpdateUserDTO, {
+            email: null,
+            name: null,
+        });
+        expect(validateSync1).toHaveLength(2);
+        expect(validateSync1.filter((value) => value.property === 'name' && value.constraints.isNotEmpty === 'O nome não pode ser vazio.'))
+            .toHaveLength(1);
+        expect(validateSync1.filter((value) => value.property === 'email' && value.constraints.isNotEmpty === 'O e-mail não pode ser vazio.'))
+            .toHaveLength(1);
+
+        const validateSync2 = getValidateSync(UpdateUserDTO, {
+            email: "usergmailcom",
+            name: 'Fulano da Silva',
+        });
+        expect(validateSync2).toHaveLength(1);
+        expect(validateSync2.filter((value) => value.property === 'email' && value.constraints.isEmail === 'O e-mail informado é inválido.'))
+            .toHaveLength(1);
+
+        const validateSync3 = getValidateSync(UpdateUserDTO, {
+            email: "user@gmail.com",
+            name: 'Fulano da Silva',
+        });
+        expect(validateSync3).toHaveLength(0);
+    });
+
+    it('should validate if the email is duplicate in update user', async () => {
+        const userEntity = new UserEntity();
+        userEntity.email = "user@gmail.com";
+        userEntity.name = 'Fulano da Silva';
+        
+        jest.spyOn(userService, 'updateUser').mockImplementation(() => {
+            throw new TypeORMError('duplicate key value violates unique constraint');
+        });
+
+        const userData: UpdateUserDTO = new UpdateUserDTO()
+        userData.email = userEntity.email
+        userData.name = userEntity.name
+
+        try {
+            await userController.updateData({ user: { id: 'abc' } }, userData)
+        }catch(error) {
+            //log(error.response)
+            expect(error.response.status).toEqual(400);
+            expect(error.response.message).toEqual([ 'Já existe outro usuário com este e-mail.' ]);
+        }
+    })
+
+    it('should return an object with user created and a sucess message in update user', async () => {
+        const userEntity = new UserEntity();
+        userEntity.email = "user@gmail.com";
+        userEntity.name = 'Fulano da Silva';
+        
+        jest.spyOn(userService, 'updateUser' as never).mockImplementation(() => userEntity as never);
+
+        const userData: UpdateUserDTO = new UpdateUserDTO()
+        userData.email = userEntity.email
+        userData.name = userEntity.name
+
+        expect(await userController.updateData({ user: { id: 'abc' } }, userData)).toEqual({
+            message: "Usuário atualizado com sucesso.",
+            user: {
+              email: "user@gmail.com",
+              id: "abc",
+              name: "Fulano da Silva"
+            },
+        });
+    });
+
+    it("it should return errors for oldPassword and newPassword empty in update password", async () => {
+        const validateSync1 = getValidateSync(UpdatePassUserDTO, {
+            oldPassword: null,
+            newPassword: null,
+        });
+        expect(validateSync1).toHaveLength(2);
+        
+        expect(validateSync1.filter((value) => value.property === 'oldPassword' && value.constraints.isNotEmpty === 'A senha atual não pode ser vazia.'))
+            .toHaveLength(1);
+        expect(validateSync1.filter((value) => value.property === 'newPassword' && value.constraints.minLength === 'A nova senha precisa ter pelo menos 6 caracteres.'))
+            .toHaveLength(1);
+        expect(validateSync1.filter((value) => value.property === 'newPassword' && value.constraints.isNotEmpty === 'A nova senha não pode ser vazia.'))
+            .toHaveLength(1);
+
+
+        const validateSync2 = getValidateSync(UpdatePassUserDTO, {
+            oldPassword: "123456",
+            newPassword: '654321',
+        });
+        expect(validateSync2).toHaveLength(0);
+
+        jest.spyOn(userService, 'updateUserPassword' as never).mockImplementation(() => { 
+            throw new Error("A senha atual não está correta.")
+        });
+
+        const userData: UpdatePassUserDTO = new UpdatePassUserDTO()
+        userData.oldPassword = null
+        userData.newPassword = null
+
+        try {
+            await userController.updatePassword({ user: { id: 'abc' } }, userData)
+        }catch(error) {
+            //log(error.response)
+            expect(error.response.status).toEqual(400);
+            expect(error.response.message).toEqual([ 'A senha atual não está correta.' ]);
+        }
+
+    })
+
+    it("it should return success for update password", async () => {
+        
+        jest.spyOn(userService, 'updateUserPassword' as never).mockImplementation(() => true as never);
+
+        const userData: UpdatePassUserDTO = new UpdatePassUserDTO()
+        userData.oldPassword = '123456'
+        userData.newPassword = '654321'
+
+        expect(await userController.updatePassword({ user: { id: 'abc' } }, userData)).toEqual({
+            message: "Senha atualizado com sucesso."
+        });
+    })
   
 });
+
+
+
 
 function getValidateSync(dto, object){
     const dtoObject = plainToInstance(dto, object);

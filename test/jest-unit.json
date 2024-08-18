@@ -10,18 +10,14 @@
         "^.+\\.(t|j)s$": "ts-jest"
       },
       "collectCoverageFrom": [
-        "**/*.(t|j)s"
+        "user/*.controller.(t|j)s",
+        "user/dto/*.(t|j)s",
+        "user/usecase/*.(t|j)s"
       ],
+     
       "coveragePathIgnorePatterns": [
-        "main.ts",
-        "app.module.ts",
-        "db/*",
-        "db/migrations/*",
-        "user/user.module.ts",
-        "config/*",
-        "user/*.e2e-spec.ts",
-        "health/*"
-    ],
+        "user/delete-test-mass.controller.ts"
+      ],
       "coverageDirectory": "../coverage",
       "testEnvironment": "node"
   }

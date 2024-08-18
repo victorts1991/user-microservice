@@ -2,6 +2,8 @@
 
 A user microservice with Node.js, Nest.js, TypeORM, Kubernetes, CI/CD, unit and e2e tests. [Under construction]
 
+This microservice does not contain the "I forgot my password" feature because it is not part of this project proposal, the objective of this project is just to demonstrate the implementation of a microservice with an application upload pipeline to AWS.
+
 ## Installation
 
 ```bash
@@ -208,7 +210,3 @@ aws eks update-kubeconfig --name user-microservice-cluster --region=us-east-2
 
 kubectl get pods
 ```
-
-## TODO:
-- add endpoint login with return token JWT;
-- add endpoints with auth (details, changedata, delete);
