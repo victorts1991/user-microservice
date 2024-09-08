@@ -20,13 +20,13 @@ export class UserService {
 
   async createUser(userEntity: UserEntity) {
     const hashPass = await bcrypt.hash(userEntity.password, this.saltOrRounds)
-  
-    let data = {
+
+    const user = this.userRepository.create({
       ...userEntity,
       password: hashPass
-    }
+    })
 
-    await this.userRepository.save(data);
+    return await this.userRepository.save(user);
   }
 
   async updateUser(userEntity: UserEntity) {
@@ -38,7 +38,7 @@ export class UserService {
       password: user.password
     }
 
-    await this.userRepository.save(data);
+    return await this.userRepository.save(data);
   }
 
   async updateUserPassword(id: string, userData: UpdatePassUserDTO) {
@@ -57,14 +57,16 @@ export class UserService {
       password: hashPass
     }
 
-    await this.userRepository.save(data);
-  }
-
-  
+    return await this.userRepository.save(data);
+  }  
 
   async signIn(email, password) {
-    const user = await this.userRepository.findOneBy({ email: email });
-    
+    const user = await this.userRepository.findOne({ where: { email: email }})
+
+    if(!user) {
+      throw new UnauthorizedException();
+    }
+
     const isMatch = await bcrypt.compare(password, user?.password);
 
     if (!isMatch) {
