@@ -42,8 +42,10 @@ export class UserController {
     userEntity.password = userData.password;
     userEntity.name = userData.name;
 
+    let userCreated: UserEntity  = null
+
     try{
-      await this.userService.createUser(userEntity)
+      userCreated = await this.userService.createUser(userEntity)
     }catch (error) {
       let message = error.message
       if(message.indexOf('duplicate key value violates unique constraint') > -1) {
@@ -55,8 +57,10 @@ export class UserController {
       }, HttpStatus.BAD_REQUEST);
     }
 
+    delete userCreated.password
+
     return {
-      user: userEntity,
+      user: userCreated,
       message: 'Usuário criado com sucesso.'
     }
     
