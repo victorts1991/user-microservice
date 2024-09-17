@@ -22,6 +22,14 @@ docker run --name user-microservice-db -e POSTGRES_PASSWORD=123456 -e POSTGRES_D
 
 Change the file name .env.sample for .env
 
+## Running the migrations
+
+If you need to run migrations
+
+```bash
+$ npm run typeorm:migration:run
+```
+
 ## Running the app
 
 ```bash
@@ -51,6 +59,16 @@ None of the above steps are necessary, just the command below:
 
 ```bash
 $ docker compose up --build
+```
+
+However, if you need to run migrations:
+
+```bash
+$ npm install
+
+$ mv .env.sample .env
+
+$ npm run typeorm:migration:run
 ```
 
 Note: If you are running on Windows and get any errors, run your CLI as administrator.
