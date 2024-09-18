@@ -228,4 +228,3 @@ aws eks update-kubeconfig --name user-microservice-cluster --region=us-east-2
 
 kubectl get pods
 ```
-
