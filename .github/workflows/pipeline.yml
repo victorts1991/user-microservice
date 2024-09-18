@@ -58,12 +58,10 @@ jobs:
       run: |
         touch  .env.DB_HOST
         touch  .env.DB_PASS
-        echo ${{ secrets.DB_HOST }} | base64 -d > .env.DB_HOST
-        echo ${{ secrets.DB_PASS }} | base64 -d > .env.DB_PASS
+        echo '${{ secrets.DB_HOST }}' | base64 -d > .env.DB_HOST
+        echo '${{ secrets.DB_PASS }}' | base64 -d > .env.DB_PASS
         export DB_HOST=$(cat ./.env.DB_HOST) 
         export DB_PASS=$(cat ./.env.DB_PASS)
-        echo $DB_HOST
-        echo $DB_PASS
         npm install
         npm run typeorm:migration:run
       continue-on-error: true
