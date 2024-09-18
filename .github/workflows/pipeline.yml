@@ -59,7 +59,7 @@ jobs:
         npm install
         touch .env
         echo DB_HOST=$(cat ./.env.DB_HOST) >> .env
-        echo DB_PASS=$(cat ./.env.DB_PASS) >> .env
+        echo DB_PASSWORD=$(cat ./.env.DB_PASS) >> .env
         echo DB_PORT=5432 >> .env
         echo DB_USERNAME=postgres >> .env
         echo DB_NAME=usermicroservicedb >> .env
