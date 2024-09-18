@@ -50,15 +50,18 @@ jobs:
     - name: Check out code
       uses: actions/checkout@v3
     - name: Run Migrations
-      env:
-        DB_HOST: ${{ secrets.DB_HOST }}
-        DB_PORT: 5432
-        DB_USERNAME: postgres
-        DB_PASSWORD: ${{ secrets.DB_PASS }}
-        DB_NAME: usermicroservicedb
-      shell: bash
       run: |
+        touch .env.DB_HOST
+        touch .env.DB_PASS
+        echo '${{ secrets.DB_HOST }}' | base64 -d > .env.DB_HOST
+        echo '${{ secrets.DB_PASS }}' | base64 -d > .env.DB_PASS
         npm install
+        touch .env
+        echo DB_HOST=$(cat ./.env.DB_HOST) >> .env
+        echo DB_PASSWORD=$(cat ./.env.DB_PASS) >> .env
+        echo DB_PORT=5432 >> .env
+        echo DB_USERNAME=postgres >> .env
+        echo DB_NAME=usermicroservicedb >> .env
         npm run typeorm:migration:run
       continue-on-error: true
 
