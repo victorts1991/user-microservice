@@ -64,7 +64,6 @@ jobs:
         echo DB_USERNAME=postgres >> .env
         echo DB_NAME=usermicroservicedb >> .env
         echo "$(<.env )" 
-        npm run build
         npm run typeorm:migration:run
       continue-on-error: true
 
